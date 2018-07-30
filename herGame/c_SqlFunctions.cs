@@ -153,6 +153,65 @@ namespace herGame
 
 	}
 
+	public class SQLiteSchema
+	{
+
+	}
+
+	public class SQLiteTable
+	{
+		public string tableName { get; set; }
+		private List<SQLiteColumn> columns = new List<SQLiteColumn>();
+		private int numOfPrimaryKeys = 0;
+		private List<string> columnNames = new List<string>();
+
+		public SQLiteTable()
+		{
+
+		}
+
+		public bool addColumn(SQLiteColumn sqlCol)
+		{
+			if ((!sqlCol.pimaryKey || numOfPrimaryKeys == 0) && !columnNames.Contains(sqlCol.columnName)) { columns.Add(sqlCol); columnNames.Add(sqlCol.columnName); if (sqlCol.pimaryKey) { numOfPrimaryKeys++; } return true; }
+			else
+			{
+				if (sqlCol.pimaryKey && numOfPrimaryKeys > 0)
+				{
+					Console.WriteLine(string.Format("Primary key already exists in `{0}`!", tableName));
+				}
+				else if (columnNames.Contains(sqlCol.columnName))
+				{
+					Console.WriteLine(string.Format("Column `{0}` already exists in `{1}`!", sqlCol.columnName, tableName));
+				}
+				return false;
+			}
+		}
+
+		public bool addColumns(List<SQLiteColumn> sqlCols)
+		{
+			int primaryKeys = 0;
+			bool sameNames = false;
+			List<string> colNames = new List<string>();
+
+			foreach (SQLiteColumn s in sqlCols)
+			{
+				if (s.pimaryKey)
+				{
+					primaryKeys++; if (primaryKeys > 1)
+					{ Console.WriteLine(string.Format("Primary key already exists in `{0}`!", tableName)); break; }
+				}
+
+				if (colNames.Contains(s.columnName) || columnNames.Contains(s.columnName))
+				{ sameNames = true; Console.WriteLine(string.Format("Column `{0}` already exists in `{1}`!", s.columnName, tableName)); break; }
+				else
+				{ colNames.Add(s.columnName); }
+			}
+
+			if (sameNames || primaryKeys > 1) { return false; }
+			else { columns.AddRange(sqlCols); columnNames.AddRange(colNames); return true; }
+		}
+	}
+
 	/// <summary>SQLiteColumn struct, contains all data needed for a basic column definition</summary>
 	public struct SQLiteColumn
 	{
@@ -167,6 +226,10 @@ namespace herGame
 
 		/// <summary>True if the column is Foreign key</summary>
 		public bool foreignKey { get; set; }
+		/// <summary>Table name of foreign table</summary>
+		public string foreignTable { get; set; }
+		/// <summary>Column name of foreign column</summary>
+		public string foreignColumn { get; set; }
 
 		/// <summary>True if the column is AutoIncremented</summary>
 		public bool autoIncrement { get; set; }
@@ -272,7 +335,30 @@ namespace herGame
 		INTEGER,
 		TEXT,
 		REAL,
-		NUMERIC
+		NUMERIC,
+
+		INT,
+		TINYINT,
+		SMALLINT,
+		MEDIUMINT,
+		BIGINT,
+		UNSIGNED_BIG_INT,
+		INT2,
+		INT8,
+		CHARACTER,
+		VARCHAR,
+		VARYING_CHARACTER,
+		NCHAR,
+		NATIVE_CHARACTER,
+		NVARCHAR,
+		CLOB,
+		DOUBLE,
+		DOUBLE_PRECISION,
+		FLOAT,
+		DECIMAL,
+		BOOLEAN,
+		DATE,
+		DATETIME
 	}
 
 }
