@@ -158,12 +158,16 @@ namespace herGame
 	{
 		/// <summary>Name of column</summary>
 		public string columnName { get; set; }
+
 		/// <summary>Datatype of column Type: SQLiteDataType</summary>
 		public SQLiteDataType dataType { get; set; }
+
 		/// <summary>True if the column is Primary key</summary>
 		public bool pimaryKey { get; set; }
+
 		/// <summary>True if the column is Foreign key</summary>
 		public bool foreignKey { get; set; }
+
 		/// <summary>True if the column is AutoIncremented</summary>
 		public bool autoIncrement { get; set; }
 
@@ -204,7 +208,7 @@ namespace herGame
 		public string cCom() { return hasColumnComment ? string.Format(" /* {0} */ ", _columnComment) : ""; }
 
 		/// <summary>Used to write out the table comment if exists</summary> <returns>Comment String if true empty string otherwise</returns>
-		public string tCom() { return isTableComment ? string.Format(" /* {0} */ ", columnName) : ""; }
+		public string tCom() { return isTableComment ? string.Format(" /* {0} */ ", _tableComment) : ""; }
 
 		/// <summary>Used to write the datatype of the column based on dataType value</summary> <returns>Datatype String</returns>
 		public string type()
