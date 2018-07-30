@@ -104,15 +104,16 @@ namespace herGame
 			if (exist == null || (bool)exist) { return false; }
 
 			StringBuilder tableBuilder = new StringBuilder("CREATE TABLE");
-			tableBuilder.AppendFormat(" {0} (", tableName);
+			tableBuilder.AppendFormat(" {0} \r\n" + 
+											"(", tableName);
 
 			foreach (SQLiteColumn c in columns)
 			{
-				tableBuilder.AppendFormat(" {0} {1} {2} ", c.dataType, c.columnName, c.pKey() + c.fKey());
-				if(!columns.Last<SQLiteColumn>().Equals(c)) { tableBuilder.Append(", "); }
+				tableBuilder.AppendFormat(" {0} ", c.getColumnDLL());
+				if(!columns.Last<SQLiteColumn>().Equals(c) && c.tableComment == null) { tableBuilder.Append(", \r\n"); }
 			}
 
-			tableBuilder.Append("); ");
+			tableBuilder.Append("\r\n); ");
 
 			if (runNonQuery(tableBuilder.ToString()) == true) { return true; } else { return false; }
 		}
@@ -163,6 +164,29 @@ namespace herGame
 		public bool pimaryKey { get; set; }
 		/// <summary>True if the column is Foreign key</summary>
 		public bool foreignKey { get; set; }
+		/// <summary>True if the column is AutoIncremented</summary>
+		public bool autoIncrement { get; set; }
+
+		/// <summary>True if column has comment</summary>
+		private bool hasColumnComment;
+		/// <summary>Private container for Column Comment</summary>
+		private string _columnComment;
+		/// <summary>Public container for Column Comment</summary>
+		public string columnComment { get { return _columnComment; } set { _columnComment = value; hasColumnComment = value.Length > 0; } }
+
+		/// <summary>True if column is additional line</summary>
+		private bool isAdditionalData;
+		/// <summary>Private container for Additional Data</summary>
+		private string _additionalData;
+		/// <summary>Public container for Additional Data</summary>
+		public string additionalData { get { return _additionalData; } set { _additionalData = value; isAdditionalData = value.Length > 0; } }
+
+		/// <summary>True if column is table comment</summary>
+		private bool isTableComment;
+		/// <summary>Private container for Table Comment</summary>
+		private string _tableComment;
+		/// <summary>Public container for Table Comment</summary>
+		public string tableComment { get { return _tableComment; } set { _tableComment = value; isTableComment = value.Length > 0; } }
 
 		/// <summary>Used to write out the PrimaryKey String</summary> <returns>PRIMARY KEY if true empty string otherwise</returns>
 		public string pKey() { return pimaryKey ? " PRIMARY KEY " : ""; }
@@ -170,12 +194,28 @@ namespace herGame
 		/// <summary>Used to write out the SecondaryKey String</summary> <returns>SECONDARY KEY if true empty string otherwise</returns>
 		public string fKey() { return foreignKey ? " FOREIGN KEY " : ""; }
 
+		/// <summary>Used to write out the SecondaryKey String</summary> <returns>SECONDARY KEY if true empty string otherwise</returns>
+		public string aInc() { return autoIncrement ? " AUTOINCREMENT " : ""; }
+
+		/// <summary>Used to write out any additional lines for table creation</summary> <returns>AddData String if true empty string otherwise</returns>
+		public string aDat() { return isAdditionalData ? string.Format(" {0} ", _additionalData) : ""; }
+
+		/// <summary>Used to write out the column comment if exists</summary> <returns>Comment String if true empty string otherwise</returns>
+		public string cCom() { return hasColumnComment ? string.Format(" /* {0} */ ", _columnComment) : ""; }
+
+		/// <summary>Used to write out the table comment if exists</summary> <returns>Comment String if true empty string otherwise</returns>
+		public string tCom() { return isTableComment ? string.Format(" /* {0} */ ", columnName) : ""; }
+
 		/// <summary>Used to write the datatype of the column based on dataType value</summary> <returns>Datatype String</returns>
 		public string type()
 		{
 			string ret = "";
 			switch (dataType)
 			{
+				case SQLiteDataType.NONE:
+					ret = "";
+					break;
+
 				case SQLiteDataType.INTEGER:
 					ret = " INTEGER ";
 					break;
@@ -198,11 +238,33 @@ namespace herGame
 			}
 			return ret;
 		}
+
+		/// <summary>
+		/// Gets the DLL for the current column in text format
+		/// </summary>
+		/// <returns>DLL of column</returns>
+		public string getColumnDLL()
+		{
+			if (isTableComment)
+			{
+				return string.Format("\r\n /* {0} */ \r\n", _tableComment);
+			}
+			else if (isAdditionalData)
+			{
+				return string.Format(" {0} ", _additionalData);
+			}
+			else
+			{
+				return string.Format(" {0} {1} {2} {3} ", columnName, type(), pKey() + fKey() + aInc(), cCom());
+			}
+			
+		}
 	}
 
 	/// <summary>Currently supported datatypes | these are the main data container types | Additional types may be added</summary>
 	public enum SQLiteDataType
 	{
+		NONE,
 		INTEGER,
 		TEXT,
 		REAL,

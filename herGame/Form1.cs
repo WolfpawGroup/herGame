@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -173,7 +174,11 @@ namespace herGame
 
 		private void btn_FindWorks_Click(object sender, EventArgs e)
 		{
+			//TODO: Changed for testing!
+
 			c_SqlFunctions cs = new c_SqlFunctions();
+			c_Functions.initializeSQL(cs);
+			/*
 			cs.createDbFile();
 			cs.sqlc = cs.connectToDB();
 
@@ -204,6 +209,7 @@ namespace herGame
 			SQLiteColumn[] cols = new SQLiteColumn[] { c1, c2, c3 };
 
 			cs.createTable("test_table", cols);
+			*/
 
 		}
 	}
