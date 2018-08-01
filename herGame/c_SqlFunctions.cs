@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using System.Data.SQLite;
 using System.Runtime.InteropServices;
@@ -15,6 +14,7 @@ namespace herGame
 	{
 		/// <summary>SQLite Connection to be used with the functions</summary>
 		public SQLiteConnection sqlc { get; set; }
+		private List<int> connectedList = new List<int> { 1, 4, 8 };
 
 		/// <summary>Creates the database file if it doesn't already exist</summary>
 		/// <param name="dbname">Name/path of the file to be created</param>
@@ -40,6 +40,25 @@ namespace herGame
 		/// <summary>Creates the database file if it doesn't already exist with the default "db.sqlite" name</summary>
 		/// <returns>true if file was created</returns>
 		public bool createDbFile() { return createDbFile(""); }
+
+		public bool createInnerConnection(string dbname)
+		{
+			if (dbname == "") { dbname = "db.sqlite"; }
+
+			try
+			{
+				sqlc = connectToDB(dbname);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+		public bool createInnerConnection()
+		{
+			return createInnerConnection("");
+		}
 
 		/// <summary>Creates and opens connection with DB file</summary>
 		/// <param name="dbname">Name/path of the file to be connected to</param>
@@ -70,7 +89,7 @@ namespace herGame
 		/// <returns>true if connection open, false if doesn't exist or not open</returns>
 		public bool checkDbConnected()
 		{
-			return sqlc == null ? false : (new List<int> { 1, 4, 8 }.Contains((int)sqlc.State) ? true : false);
+			return sqlc == null ? false : (connectedList.Contains((int)sqlc.State) ? true : false);
 		}
 
 		/// <summary>Checks if a table can be found in the DB already</summary>
