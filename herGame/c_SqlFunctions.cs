@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Data.SQLite;
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace herGame
 {
@@ -165,9 +167,12 @@ namespace herGame
 		private int numOfPrimaryKeys = 0;
 		private List<string> columnNames = new List<string>();
 
-		public SQLiteTable()
+		public SQLiteTable(string TableName)
 		{
+			if(TableName == null || TableName == "")
+			{ throw new Exception("The table name is not a valid value!",new ArgumentException()); }
 
+			tableName = TableName;
 		}
 
 		public bool addColumn(SQLiteColumn sqlCol)

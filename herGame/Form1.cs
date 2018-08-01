@@ -176,6 +176,13 @@ namespace herGame
 		{
 			//TODO: Changed for testing!
 
+			SQLiteTable sqlt1 = new SQLiteTable("tbl");
+			SQLiteTable sqlt2 = new SQLiteTable("");
+
+			Console.WriteLine(sqlt1.ToString() + "" + sqlt2.ToString());
+
+			Application.Exit();
+
 			c_SqlFunctions cs = new c_SqlFunctions();
 			c_Functions.initializeSQL(cs);
 			/*
