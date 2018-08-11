@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace herGame
@@ -13,8 +13,16 @@ namespace herGame
 		public static string getUserAgent()
 		{
 			string ret = "";
-
-			ret = "WolfPawStudios-HerGame/v01/oid=" + randomNumber() + "/(by:WolfyD)";
+			ret = Environment.TickCount.ToString();
+			ret = ret.Substring(ret.Length - 4);
+			Random r = new Random();
+			foreach (byte b in MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(ret + "_" + randomNumber())))
+			{
+				r.NextBytes(new byte[3]);
+				ret += b.ToString("X" + r.Next(1, 5)).ToUpper();
+			}
+			ret = Convert.ToBase64String(Encoding.ASCII.GetBytes(ret));
+			ret = "WolfPawStudios-HerGame/v01/oid=" + ret + "/(by:WolfyD)";
 
 			return ret;
 		}
@@ -23,7 +31,7 @@ namespace herGame
 		{
 			int ret = 0;
 
-			byte[] btmp = new MD5CryptoServiceProvider().ComputeHash(Encoding.ASCII.GetBytes(Environment.TickCount.ToString()));
+			byte[] btmp = MD5.Create().ComputeHash(Encoding.ASCII.GetBytes(Environment.TickCount.ToString()));
 
 			int i = 0;
 			foreach(int b in btmp) { i += b; }
@@ -50,48 +58,67 @@ namespace herGame
 			return xd;
 		}
 
+
+		//==================================//
+		//		Handling table creation		//
+		//==================================//
+
 		public static c_SqlFunctions initializeSQL(c_SqlFunctions csqlf)
 		{
 			csqlf.createDbFile();
-			csqlf.sqlc = csqlf.connectToDB();
+			csqlf.createInternalConnection();
 
 			foreach (KeyValuePair<string, List<SQLiteColumn>> kvp in getListOfTables())
 			{
 				csqlf.createTable(kvp.Key, kvp.Value);
 			}
-
 			
-
 			return csqlf;
 		}
 
 		public static Dictionary<string, List<SQLiteColumn>> getListOfTables()
 		{
 			Dictionary<string, List<SQLiteColumn>> tables = new Dictionary<string, List<SQLiteColumn>>();
-
-			//TODO: Changed for testing!
-
-			tables.Add("artists", new List<SQLiteColumn>() {
-				new SQLiteColumn() { tableComment = "This is a test comment." },
-				new SQLiteColumn() { columnName = "id", dataType =  SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true },	//ID = int
-				new SQLiteColumn() { columnName = "name", dataType = SQLiteDataType.TEXT,columnComment = "Comment on column!" },		//Name = string
-				new SQLiteColumn() { columnName = "has_other_names", dataType = SQLiteDataType.INTEGER },								//HasOtherNames = bool 1=true
-				new SQLiteColumn() { columnName = "other_names", dataType = SQLiteDataType.TEXT },										//OtherNames = string[] as XML
-				new SQLiteColumn() { columnName = "has_urls", dataType = SQLiteDataType.INTEGER },										//HasURLs = bool 1=true
-				new SQLiteColumn() { columnName = "urls", dataType = SQLiteDataType.TEXT },                                             //URLs = string[] as XML
-				new SQLiteColumn() { columnName = "added", dataType = SQLiteDataType.TEXT }  ,                                          //DateAdded = string eg:2018.05.11
-				new SQLiteColumn() { additionalData = "FOREIGN KEY (other_names) REFERENCES (other_names1)" }                                             //DateAdded = string eg:2018.05.11
-			});
-
-			tables.Add("images", new List<SQLiteColumn>()
-			{
-				//TODO: Add data to images
-				//Don't forget to add already downloaded and already sent
-			});
-
-
-
+			
+			Type ArtistType = typeof(c_Artist);
+			tables.Add("artists", getColumnListFromMethod(ArtistType));
+			
+			Type ImageDetailType = typeof(c_ImageDetails);
+			tables.Add("images", getColumnListFromMethod(ImageDetailType));
+			
 			return tables;
 		}
+
+		/// <summary>
+		/// Serialized methods using customAttributes
+		/// Using methods to get table dll
+		/// </summary>
+		public static List<SQLiteColumn> getColumnListFromMethod(Type type)
+		{
+			List<SQLiteColumn> sqltmpcol = new List<SQLiteColumn>();
+			foreach (PropertyInfo m in type.GetProperties())
+			{
+				foreach (var att in m.GetCustomAttributes(true))
+				{
+					fieldDefinitions fd = att as fieldDefinitions;
+					if (fd != null)
+					{
+						SQLiteColumn sqlCol = new SQLiteColumn()
+						{
+							columnName = fd.columnName,
+							pimaryKey = fd.pimaryKey,
+							autoIncrement = fd.autoIncrement,
+							dataType = fd.dataType,
+							columnComment = fd.columnComment,
+							additionalData = fd.additionalData
+						};
+						sqltmpcol.Add(sqlCol);
+					}
+				}
+			}
+
+			return sqltmpcol;
+		}
+
 	}
 }

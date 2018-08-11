@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 
 using System.Data.SQLite;
-using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles;
 
 namespace herGame
 {
@@ -15,6 +13,8 @@ namespace herGame
 		/// <summary>SQLite Connection to be used with the functions</summary>
 		public SQLiteConnection sqlc { get; set; }
 		private List<int> connectedList = new List<int> { 1, 4, 8 };
+
+		#region Create DB File
 
 		/// <summary>Creates the database file if it doesn't already exist</summary>
 		/// <param name="dbname">Name/path of the file to be created</param>
@@ -41,7 +41,11 @@ namespace herGame
 		/// <returns>true if file was created</returns>
 		public bool createDbFile() { return createDbFile(""); }
 
-		public bool createInnerConnection(string dbname)
+		#endregion
+
+		#region CONNECT TO DB
+
+		public bool createInternalConnection(string dbname)
 		{
 			if (dbname == "") { dbname = "db.sqlite"; }
 
@@ -55,9 +59,9 @@ namespace herGame
 				return false;
 			}
 		}
-		public bool createInnerConnection()
+		public bool createInternalConnection()
 		{
-			return createInnerConnection("");
+			return createInternalConnection("");
 		}
 
 		/// <summary>Creates and opens connection with DB file</summary>
@@ -84,13 +88,40 @@ namespace herGame
 		/// <summary>Creates and opens connection with DB file with the default "db.sqlite" name</summary>
 		/// <returns>SQLiteConnection if connected, Null if not</returns>
 		public SQLiteConnection connectToDB() { return connectToDB(""); }
-
+		
 		/// <summary>Checks the current sqlc connection if it exists and is not closed, connecting or broken</summary>
 		/// <returns>true if connection open, false if doesn't exist or not open</returns>
 		public bool checkDbConnected()
 		{
 			return sqlc == null ? false : (connectedList.Contains((int)sqlc.State) ? true : false);
 		}
+
+		#endregion
+
+		/// <summary>Wrapper for the SQLiteCommand.ExecuteNonQuery function</summary>
+		/// <param name="query">Query string to be executed</param>
+		/// <returns>true if execution success, false if error</returns>
+		public bool runNonQuery(string query)
+		{
+			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return false; }
+
+			SQLiteCommand sqlk = new SQLiteCommand(query, sqlc);
+			int i = -1;
+
+			try
+			{
+				i = sqlk.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("ERROR:SQLC → SQL query returned error: \r\n" + ex.ToString());
+				return false;
+			}
+
+			return i > -1;
+		}
+
+		#region TABLES
 
 		/// <summary>Checks if a table can be found in the DB already</summary>
 		/// <param name="tableName">Name of the table to find</param>
@@ -124,19 +155,18 @@ namespace herGame
 			object exist = checkTableExists(tableName);
 			if (exist == null || (bool)exist) { return false; }
 
-			StringBuilder tableBuilder = new StringBuilder("CREATE TABLE");
-			tableBuilder.AppendFormat(" {0} \r\n" + 
-											"(", tableName);
+			StringBuilder tableBuilder = new StringBuilder(string.Format("CREATE TABLE {0} \r\n" +
+																				"(", tableName));
 
 			foreach (SQLiteColumn c in columns)
 			{
 				tableBuilder.AppendFormat(" {0} ", c.getColumnDLL());
-				if(!columns.Last<SQLiteColumn>().Equals(c) && c.tableComment == null) { tableBuilder.Append(", \r\n"); }
+				if(!columns.Last().Equals(c)) { tableBuilder.Append(", \r\n"); }
 			}
 
 			tableBuilder.Append("\r\n); ");
 
-			if (runNonQuery(tableBuilder.ToString()) == true) { return true; } else { return false; }
+			return runNonQuery(tableBuilder.ToString()) == true;
 		}
 
 		/// <summary> Modular table creator function | Creates a new named table if that table doesn't yet exist in the database | Uses modular column definition for reusability</summary>
@@ -149,92 +179,218 @@ namespace herGame
 			return createTable(tableName, cols);
 		}
 
-		/// <summary>Wrapper for the SQLiteCommand.ExecuteNonQuery function</summary>
-		/// <param name="query">Query string to be executed</param>
-		/// <returns>true if execution success, false if error</returns>
-		public bool runNonQuery(string query)
+		#endregion
+
+		#region INSERT/UPDATE/DELETE
+
+		/// <summary>
+		/// Insert data into selected table
+		/// </summary>
+		/// <param name="values">string[][Column Name|Column is String ("true"/"false")|Column Value]</param>
+		public bool insertInto(string tableName, string[][] values)
 		{
 			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return false; }
+			object exist = checkTableExists(tableName);
+			if (exist == null || !(bool)exist) { return false; }
 
-			SQLiteCommand sqlk = new  SQLiteCommand(query, sqlc);
-			int i = -1;
+			StringBuilder insertBuilder = new StringBuilder(string.Format("INSERT INTO {0} \r\n\t", tableName));
 
-			try
+			string columns = "(";
+			string vals = "(";
+			string template = "";
+
+			foreach (var v in values)
 			{
-				i = sqlk.ExecuteNonQuery();
+				columns += v[0];
+
+				template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
+
+				vals += string.Format(template, v[2]);
+
+				if (!values.Last().Equals(v))
+				{
+					columns += ", ";
+					vals += ", ";
+				}
+				else
+				{
+					columns += ")\r\n VALUES\r\n\t ";
+					vals += ");";
+				}
 			}
-			catch (Exception ex)
+
+			insertBuilder.AppendFormat(" {0} {1} ", columns, vals);
+
+			return runNonQuery(insertBuilder.ToString()) == true;
+		}
+
+		public bool insertInto(string tableName, Dictionary<SQLiteColumn, string> values)
+		{
+			string[][] vals = new string[values.Count][];
+			int i = 0;
+
+			foreach (var v in values)
 			{
-				Console.WriteLine("ERROR:SQLC → SQL query returned error: \r\n" + ex.ToString());
-				return false;
+				vals[i] = new string[] { v.Key.columnName, (v.Key.isString() ? "true" : "false"), v.Value };
+				i++;
+			}
+
+			return insertInto(tableName, vals);
+		}
+
+		public bool insertInto(string tableName, string[] values)
+		{
+			string[][] vals = new string[values.Length][];
+			int i = 0;
+			string[] tf = new string[] { "true", "false" };
+
+			foreach (var v in values)
+			{
+				string[] vT = v.Split(';');
+				vals[i] = new string[] { vT[0], (tf.Contains(vT[1]) ? vT[1] : (vT[1] == "1" ? "true" : "false")), vT[2] };
+				i++;
+			}
+
+			return insertInto(tableName, vals);
+		}
+
+		public bool insertInto(string tableName, string values)
+		{
+			string[][] vals = new string[values.Split(';').Length][];
+			int i = 0;
+			string[] tf = new string[] { "true", "false" };
+
+			foreach (var v in values.Split(';'))
+			{
+				string[] vT = v.Split(':');
+				vals[i] = new string[] { vT[0], (tf.Contains(vT[1]) ? vT[1] : (vT[1] == "1" ? "true" : "false")), vT[2] };
+				i++;
+			}
+
+			return insertInto(tableName, vals);
+		}
+
+		public bool update(string tableName, Dictionary<SQLiteColumn, string> values, string where)
+		{
+			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return false; }
+			object exist = checkTableExists(tableName);
+			if (exist == null || !(bool)exist) { return false; }
+
+			StringBuilder updateBuilder = new StringBuilder(string.Format("UPDATE {0} \r\n\t SET ", tableName));
+
+			foreach (var v in values)
+			{
+				updateBuilder.AppendFormat("",v.Key.columnName,v.Key.isString() ? "'" + v.Value + "'" : v.Value);
+				
+				if (!values.Last().Equals(v))
+				{
+					updateBuilder.Append(", ");
+				}
+				else
+				{
+					updateBuilder.AppendFormat(" {0} ", where == "" ? "" : " WHERE \r\n\t " + where);
+				}
+			}
+
+			return runNonQuery(updateBuilder.ToString()) == true;
+		}
+
+		public bool deleteFrom(string tableName, string where)
+		{
+			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return false; }
+			object exist = checkTableExists(tableName);
+			if (exist == null || !(bool)exist) { return false; }
+
+			StringBuilder deleteBuilder = new StringBuilder(string.Format("DELETE FROM \r\n\t {0} \r\n ", tableName));
+			if (where.Length > 0)
+			{
+				if (where.Trim().ToLower().StartsWith("where"))
+				{
+					where = " " + where.Substring(where.ToLower().IndexOf("where") + 5);
+				}
+
+				deleteBuilder.AppendFormat(" WHERE\r\n\t {0} ", where);
+			}
+
+			return runNonQuery(deleteBuilder.ToString()) == true;
+		}
+
+		#endregion
+
+		#region SELECT
+
+		public List<string[,]> select(string tableName, string[] cols, string where)
+		{
+			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return null; }
+			object exist = checkTableExists(tableName);
+			if (exist == null || !(bool)exist) { return null; }
+
+			string selectCols = (cols.Length < 2 ? (cols.Length == 0 ? " * " : cols[0]) : string.Join(", \r\n\t", cols));
+
+			StringBuilder selectBuilder = new StringBuilder(string.Format("SELECT \r\n\t {0} \r\n FROM \r\n\t {1} \r\n ", selectCols, tableName));
+
+			if (where.Length > 0)
+			{
+				if (where.Trim().ToLower().StartsWith("where"))
+				{
+					where = " " + where.Substring(where.ToLower().IndexOf("where") + 5);
+				}
+
+				selectBuilder.AppendFormat(" WHERE\r\n\t {0} ", where);
 			}
 			
-			return i > -1;
+			SQLiteCommand sqlk = new SQLiteCommand(selectBuilder.ToString(), sqlc);
+			
+			return getStringsFrom(sqlk.ExecuteReader());
 		}
 
-	}
-
-	public class SQLiteSchema
-	{
-
-	}
-
-	public class SQLiteTable
-	{
-		public string tableName { get; set; }
-		private List<SQLiteColumn> columns = new List<SQLiteColumn>();
-		private int numOfPrimaryKeys = 0;
-		private List<string> columnNames = new List<string>();
-
-		public SQLiteTable(string TableName)
+		public List<string[,]> select(string tableName, SQLiteColumn[] cols, string where)
 		{
-			if(TableName == null || TableName == "")
-			{ throw new Exception("The table name is not a valid value!",new ArgumentException()); }
-
-			tableName = TableName;
+			return select(tableName, cols.ToList().Select(x => x.columnName).ToArray(), where);
 		}
 
-		public bool addColumn(SQLiteColumn sqlCol)
+		public List<string[,]> select(string tableName, List<SQLiteColumn> cols, string where)
 		{
-			if ((!sqlCol.pimaryKey || numOfPrimaryKeys == 0) && !columnNames.Contains(sqlCol.columnName)) { columns.Add(sqlCol); columnNames.Add(sqlCol.columnName); if (sqlCol.pimaryKey) { numOfPrimaryKeys++; } return true; }
-			else
+			return select(tableName, cols.Select(x => x.columnName).ToArray(), where);
+		}
+
+		public List<string[,]> select(string tableName, string cols, char delimiter, string where)
+		{
+			return select(tableName, cols.Split(delimiter), where);
+		}
+
+		/// <summary>
+		/// Returns result data as a list of string[,]{value as string/datatype};
+		/// </summary>
+		public List<string[,]> getStringsFrom(SQLiteDataReader r)
+		{
+			List<string[,]> ret = null;
+			ret = new List<string[,]>();
+
+			if (r.HasRows)
 			{
-				if (sqlCol.pimaryKey && numOfPrimaryKeys > 0)
+				while (r.Read())
 				{
-					Console.WriteLine(string.Format("Primary key already exists in `{0}`!", tableName));
-				}
-				else if (columnNames.Contains(sqlCol.columnName))
-				{
-					Console.WriteLine(string.Format("Column `{0}` already exists in `{1}`!", sqlCol.columnName, tableName));
-				}
-				return false;
-			}
-		}
+					string[,] tmpArr = new string[r.FieldCount, 2];
 
-		public bool addColumns(List<SQLiteColumn> sqlCols)
-		{
-			int primaryKeys = 0;
-			bool sameNames = false;
-			List<string> colNames = new List<string>();
+					for (int i = 0; i < r.FieldCount; i++)
+					{
+						tmpArr[i, 0] = r.GetValue(i).ToString();
+						tmpArr[i, 1] = r.GetName(i);
+					}
 
-			foreach (SQLiteColumn s in sqlCols)
-			{
-				if (s.pimaryKey)
-				{
-					primaryKeys++; if (primaryKeys > 1)
-					{ Console.WriteLine(string.Format("Primary key already exists in `{0}`!", tableName)); break; }
+					ret.Add(tmpArr);
 				}
-
-				if (colNames.Contains(s.columnName) || columnNames.Contains(s.columnName))
-				{ sameNames = true; Console.WriteLine(string.Format("Column `{0}` already exists in `{1}`!", s.columnName, tableName)); break; }
-				else
-				{ colNames.Add(s.columnName); }
 			}
 
-			if (sameNames || primaryKeys > 1) { return false; }
-			else { columns.AddRange(sqlCols); columnNames.AddRange(colNames); return true; }
+			return ret;
 		}
+
+		#endregion
+
+
 	}
+	
 
 	/// <summary>SQLiteColumn struct, contains all data needed for a basic column definition</summary>
 	public struct SQLiteColumn
@@ -248,13 +404,6 @@ namespace herGame
 		/// <summary>True if the column is Primary key</summary>
 		public bool pimaryKey { get; set; }
 
-		/// <summary>True if the column is Foreign key</summary>
-		public bool foreignKey { get; set; }
-		/// <summary>Table name of foreign table</summary>
-		public string foreignTable { get; set; }
-		/// <summary>Column name of foreign column</summary>
-		public string foreignColumn { get; set; }
-
 		/// <summary>True if the column is AutoIncremented</summary>
 		public bool autoIncrement { get; set; }
 
@@ -263,28 +412,18 @@ namespace herGame
 		/// <summary>Private container for Column Comment</summary>
 		private string _columnComment;
 		/// <summary>Public container for Column Comment</summary>
-		public string columnComment { get { return _columnComment; } set { _columnComment = value; hasColumnComment = value.Length > 0; } }
+		public string columnComment { get { return _columnComment; } set { _columnComment = value; hasColumnComment = value != null && value.Length > 0; } }
 
 		/// <summary>True if column is additional line</summary>
 		private bool isAdditionalData;
 		/// <summary>Private container for Additional Data</summary>
 		private string _additionalData;
 		/// <summary>Public container for Additional Data</summary>
-		public string additionalData { get { return _additionalData; } set { _additionalData = value; isAdditionalData = value.Length > 0; } }
-
-		/// <summary>True if column is table comment</summary>
-		private bool isTableComment;
-		/// <summary>Private container for Table Comment</summary>
-		private string _tableComment;
-		/// <summary>Public container for Table Comment</summary>
-		public string tableComment { get { return _tableComment; } set { _tableComment = value; isTableComment = value.Length > 0; } }
-
+		public string additionalData { get { return _additionalData; } set { _additionalData = value; isAdditionalData = value != null && value.Length > 0; } }
+		
 		/// <summary>Used to write out the PrimaryKey String</summary> <returns>PRIMARY KEY if true empty string otherwise</returns>
 		public string pKey() { return pimaryKey ? " PRIMARY KEY " : ""; }
-
-		/// <summary>Used to write out the SecondaryKey String</summary> <returns>SECONDARY KEY if true empty string otherwise</returns>
-		public string fKey() { return foreignKey ? " FOREIGN KEY " : ""; }
-
+		
 		/// <summary>Used to write out the SecondaryKey String</summary> <returns>SECONDARY KEY if true empty string otherwise</returns>
 		public string aInc() { return autoIncrement ? " AUTOINCREMENT " : ""; }
 
@@ -294,8 +433,11 @@ namespace herGame
 		/// <summary>Used to write out the column comment if exists</summary> <returns>Comment String if true empty string otherwise</returns>
 		public string cCom() { return hasColumnComment ? string.Format(" /* {0} */ ", _columnComment) : ""; }
 
-		/// <summary>Used to write out the table comment if exists</summary> <returns>Comment String if true empty string otherwise</returns>
-		public string tCom() { return isTableComment ? string.Format(" /* {0} */ ", _tableComment) : ""; }
+		/// <summary>Used to check wheather the column content is a string value</summary> <returns>True if datatype = text</returns>
+		public bool isString()
+		{
+			return dataType == SQLiteDataType.TEXT;
+		}
 
 		/// <summary>Used to write the datatype of the column based on dataType value</summary> <returns>Datatype String</returns>
 		public string type()
@@ -336,19 +478,14 @@ namespace herGame
 		/// <returns>DLL of column</returns>
 		public string getColumnDLL()
 		{
-			if (isTableComment)
-			{
-				return string.Format("\r\n /* {0} */ \r\n", _tableComment);
-			}
-			else if (isAdditionalData)
+			if (isAdditionalData)
 			{
 				return string.Format(" {0} ", _additionalData);
 			}
 			else
 			{
-				return string.Format(" {0} {1} {2} {3} ", columnName, type(), pKey() + fKey() + aInc(), cCom());
+				return string.Format(" {0} {1} {2} {3} ", columnName, type(), pKey() + aInc(), cCom());
 			}
-			
 		}
 	}
 
@@ -359,30 +496,7 @@ namespace herGame
 		INTEGER,
 		TEXT,
 		REAL,
-		NUMERIC,
-
-		INT,
-		TINYINT,
-		SMALLINT,
-		MEDIUMINT,
-		BIGINT,
-		UNSIGNED_BIG_INT,
-		INT2,
-		INT8,
-		CHARACTER,
-		VARCHAR,
-		VARYING_CHARACTER,
-		NCHAR,
-		NATIVE_CHARACTER,
-		NVARCHAR,
-		CLOB,
-		DOUBLE,
-		DOUBLE_PRECISION,
-		FLOAT,
-		DECIMAL,
-		BOOLEAN,
-		DATE,
-		DATETIME
+		NUMERIC
 	}
 
 }

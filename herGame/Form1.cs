@@ -15,6 +15,7 @@ namespace herGame
 	{
 		public bool SettingsOpen = false;
 		Timer t_Settings = new Timer() { Interval = 1 };
+		c_SqlFunctions cs = new c_SqlFunctions();
 
 		public Form1()
 		{
@@ -26,6 +27,7 @@ namespace herGame
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			fixPaginationLayout();
+			c_Functions.initializeSQL(cs);
 		}
 
 		protected override CreateParams CreateParams
@@ -174,50 +176,7 @@ namespace herGame
 
 		private void btn_FindWorks_Click(object sender, EventArgs e)
 		{
-			//TODO: Changed for testing!
-
-			SQLiteTable sqlt1 = new SQLiteTable("tbl");
-			SQLiteTable sqlt2 = new SQLiteTable("");
-
-			Console.WriteLine(sqlt1.ToString() + "" + sqlt2.ToString());
-
-			Application.Exit();
-
-			c_SqlFunctions cs = new c_SqlFunctions();
-			c_Functions.initializeSQL(cs);
-			/*
-			cs.createDbFile();
-			cs.sqlc = cs.connectToDB();
-
-			SQLiteColumn c1 = new SQLiteColumn()
-			{
-				columnName = "id",
-				dataType = SQLiteDataType.INTEGER,
-				pimaryKey = true,
-				foreignKey = false
-			};
-
-			SQLiteColumn c2 = new SQLiteColumn()
-			{
-				columnName = "name",
-				dataType = SQLiteDataType.TEXT,
-				pimaryKey = false,
-				foreignKey = true
-			};
-
-			SQLiteColumn c3 = new SQLiteColumn()
-			{
-				columnName = "dob",
-				dataType = SQLiteDataType.TEXT,
-				pimaryKey = false,
-				foreignKey = false
-			};
-
-			SQLiteColumn[] cols = new SQLiteColumn[] { c1, c2, c3 };
-
-			cs.createTable("test_table", cols);
-			*/
-
+			Console.WriteLine(c_Functions.getUserAgent());
 		}
 	}
 }
