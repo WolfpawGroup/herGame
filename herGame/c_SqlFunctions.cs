@@ -208,7 +208,7 @@ namespace herGame
 
 		public bool addColumns(List<SQLiteColumn> sqlCols)
 		{
-			int primaryKeys = 0;
+			int primaryKeys = numOfPrimaryKeys;
 			bool sameNames = false;
 			List<string> colNames = new List<string>();
 

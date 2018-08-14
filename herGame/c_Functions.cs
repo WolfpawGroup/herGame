@@ -79,8 +79,7 @@ namespace herGame
 				new SQLiteColumn() { columnName = "other_names", dataType = SQLiteDataType.TEXT },										//OtherNames = string[] as XML
 				new SQLiteColumn() { columnName = "has_urls", dataType = SQLiteDataType.INTEGER },										//HasURLs = bool 1=true
 				new SQLiteColumn() { columnName = "urls", dataType = SQLiteDataType.TEXT },                                             //URLs = string[] as XML
-				new SQLiteColumn() { columnName = "added", dataType = SQLiteDataType.TEXT }  ,                                          //DateAdded = string eg:2018.05.11
-				new SQLiteColumn() { additionalData = "FOREIGN KEY (other_names) REFERENCES (other_names1)" }                                             //DateAdded = string eg:2018.05.11
+				new SQLiteColumn() { columnName = "added", dataType = SQLiteDataType.TEXT }                                        //DateAdded = string eg:2018.05.11
 			});
 
 			tables.Add("images", new List<SQLiteColumn>()
