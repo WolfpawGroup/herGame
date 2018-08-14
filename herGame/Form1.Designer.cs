@@ -64,6 +64,13 @@
 			this.btn_ImageListDelete = new System.Windows.Forms.Button();
 			this.tp_Output = new System.Windows.Forms.TabPage();
 			this.pb_PreviewImage = new System.Windows.Forms.PictureBox();
+			this.statusStrip2 = new System.Windows.Forms.StatusStrip();
+			this.lv_Images = new System.Windows.Forms.ListView();
+			this.ch_ImageListIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.c_ImageListMd5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ch_ImageListSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ch_ImageListScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ch_ImageListShared = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.toolStrip1.SuspendLayout();
 			this.p_Options.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.num_RandomImages)).BeginInit();
@@ -283,6 +290,8 @@
 			// 
 			// splitContainer1.Panel1
 			// 
+			this.splitContainer1.Panel1.Controls.Add(this.lv_Images);
+			this.splitContainer1.Panel1.Controls.Add(this.statusStrip2);
 			this.splitContainer1.Panel1.Controls.Add(this.toolStrip2);
 			// 
 			// splitContainer1.Panel2
@@ -294,6 +303,7 @@
 			// 
 			// toolStrip2
 			// 
+			this.toolStrip2.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btn_Pages_Previous,
             this.sep_Pages_Sep1,
@@ -305,6 +315,7 @@
             this.btn_Pages_Next});
 			this.toolStrip2.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip2.Name = "toolStrip2";
+			this.toolStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			this.toolStrip2.Size = new System.Drawing.Size(392, 25);
 			this.toolStrip2.TabIndex = 0;
 			this.toolStrip2.Text = "toolStrip2";
@@ -427,6 +438,7 @@
 			// btn_ImageListDelete
 			// 
 			this.btn_ImageListDelete.Dock = System.Windows.Forms.DockStyle.Right;
+			this.btn_ImageListDelete.Enabled = false;
 			this.btn_ImageListDelete.Location = new System.Drawing.Point(346, 3);
 			this.btn_ImageListDelete.Name = "btn_ImageListDelete";
 			this.btn_ImageListDelete.Size = new System.Drawing.Size(47, 142);
@@ -454,6 +466,58 @@
 			this.pb_PreviewImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pb_PreviewImage.TabIndex = 0;
 			this.pb_PreviewImage.TabStop = false;
+			// 
+			// statusStrip2
+			// 
+			this.statusStrip2.Location = new System.Drawing.Point(0, 381);
+			this.statusStrip2.Name = "statusStrip2";
+			this.statusStrip2.Size = new System.Drawing.Size(392, 22);
+			this.statusStrip2.TabIndex = 1;
+			this.statusStrip2.Text = "statusStrip2";
+			// 
+			// lv_Images
+			// 
+			this.lv_Images.CheckBoxes = true;
+			this.lv_Images.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.ch_ImageListIndex,
+            this.c_ImageListMd5,
+            this.ch_ImageListSize,
+            this.ch_ImageListScore,
+            this.ch_ImageListShared});
+			this.lv_Images.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lv_Images.FullRowSelect = true;
+			this.lv_Images.GridLines = true;
+			this.lv_Images.Location = new System.Drawing.Point(0, 25);
+			this.lv_Images.Name = "lv_Images";
+			this.lv_Images.Size = new System.Drawing.Size(392, 356);
+			this.lv_Images.TabIndex = 2;
+			this.lv_Images.UseCompatibleStateImageBehavior = false;
+			this.lv_Images.View = System.Windows.Forms.View.Details;
+			// 
+			// ch_ImageListIndex
+			// 
+			this.ch_ImageListIndex.Text = "#";
+			this.ch_ImageListIndex.Width = 46;
+			// 
+			// c_ImageListMd5
+			// 
+			this.c_ImageListMd5.Text = "MD5";
+			this.c_ImageListMd5.Width = 175;
+			// 
+			// ch_ImageListSize
+			// 
+			this.ch_ImageListSize.Text = "Size";
+			this.ch_ImageListSize.Width = 72;
+			// 
+			// ch_ImageListScore
+			// 
+			this.ch_ImageListScore.Text = "Score";
+			this.ch_ImageListScore.Width = 45;
+			// 
+			// ch_ImageListShared
+			// 
+			this.ch_ImageListShared.Text = "Shared";
+			this.ch_ImageListShared.Width = 46;
 			// 
 			// Form1
 			// 
@@ -528,6 +592,13 @@
 		private System.Windows.Forms.ToolStripSeparator sep_Pages_Sep2;
 		private System.Windows.Forms.ToolStripButton btn_Pages_Next;
 		private System.Windows.Forms.ToolStripButton toolStripButton1;
+		private System.Windows.Forms.ListView lv_Images;
+		private System.Windows.Forms.ColumnHeader ch_ImageListIndex;
+		private System.Windows.Forms.ColumnHeader c_ImageListMd5;
+		private System.Windows.Forms.ColumnHeader ch_ImageListSize;
+		private System.Windows.Forms.ColumnHeader ch_ImageListScore;
+		private System.Windows.Forms.ColumnHeader ch_ImageListShared;
+		private System.Windows.Forms.StatusStrip statusStrip2;
 	}
 }
 
