@@ -280,7 +280,7 @@ namespace herGame
 
 			foreach (var v in values)
 			{
-				updateBuilder.AppendFormat("",v.Key.columnName,v.Key.isString() ? "'" + v.Value + "'" : v.Value);
+				updateBuilder.AppendFormat(" {0}={1}",v.Key.columnName,v.Key.isString() ? "'" + v.Value + "'" : v.Value);
 				
 				if (!values.Last().Equals(v))
 				{
