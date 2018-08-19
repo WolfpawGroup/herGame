@@ -187,44 +187,78 @@ namespace herGame
 		/// Insert data into selected table
 		/// </summary>
 		/// <param name="values">string[][Column Name|Column is String ("true"/"false")|Column Value]</param>
-		public bool insertInto(string tableName, string[][] values)
+		public bool insertInto(string tableName, string[][] values, bool update = false, string updateCheck = "")
 		{
 			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return false; }
 			object exist = checkTableExists(tableName);
 			if (exist == null || !(bool)exist) { return false; }
 
-			StringBuilder insertBuilder = new StringBuilder(string.Format("INSERT INTO {0} \r\n\t", tableName));
-
-			string columns = "(";
-			string vals = "(";
+			StringBuilder insertBuilder = new StringBuilder();
 			string template = "";
 
-			foreach (var v in values)
+			bool needUpdate = false;
+
+			if (update && updateCheck != "")
 			{
-				columns += v[0];
-
-				template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
-
-				vals += string.Format(template, v[2]);
-
-				if (!values.Last().Equals(v))
-				{
-					columns += ", ";
-					vals += ", ";
-				}
-				else
-				{
-					columns += ")\r\n VALUES\r\n\t ";
-					vals += ");";
-				}
+				string sel = "SELECT count(id) FROM " + tableName + " WHERE " + updateCheck;
+				SQLiteCommand sqc = new SQLiteCommand(sel, sqlc);
+				int i = Convert.ToInt32(sqc.ExecuteScalar());
+				if(i > 0) { needUpdate = true; }
 			}
 
-			insertBuilder.AppendFormat(" {0} {1} ", columns, vals);
+			if (!needUpdate)
+			{
+
+				insertBuilder.Append(string.Format("INSERT INTO {0} \r\n\t", tableName));
+
+				string columns = "(";
+				string vals = "(";
+				
+
+				foreach (var v in values)
+				{
+					columns += v[0];
+
+					template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
+
+					vals += string.Format(template, v[2]);
+
+					if (!values.Last().Equals(v))
+					{
+						columns += ", ";
+						vals += ", ";
+					}
+					else
+					{
+						columns += ")\r\n VALUES\r\n\t ";
+						vals += ");";
+					}
+				}
+
+				insertBuilder.AppendFormat(" {0} {1} ", columns, vals);
+			}
+			else
+			{
+				insertBuilder.Append(string.Format("UPDATE {0} \r\n\tSET ", tableName));
+				foreach (var v in values)
+				{
+					string col = v[0];
+
+					template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
+
+					string val = string.Format(template, v[2]);
+
+					insertBuilder.Append(string.Format(" {0}={1}", col, val));
+					if (!values.Last().Equals(v)) { insertBuilder.Append(", "); }
+				}
+
+				insertBuilder.Append(string.Format(" \r\n WHERE {0}", updateCheck));
+			}
 
 			return runNonQuery(insertBuilder.ToString()) == true;
 		}
 
-		public bool insertInto(string tableName, Dictionary<SQLiteColumn, string> values)
+		public bool insertInto(string tableName, Dictionary<SQLiteColumn, string> values, bool update = false, string updateCheck = "")
 		{
 			string[][] vals = new string[values.Count][];
 			int i = 0;
@@ -235,10 +269,10 @@ namespace herGame
 				i++;
 			}
 
-			return insertInto(tableName, vals);
+			return insertInto(tableName, vals, update, updateCheck);
 		}
 
-		public bool insertInto(string tableName, string[] values)
+		public bool insertInto(string tableName, string[] values, bool update = false, string updateCheck = "")
 		{
 			string[][] vals = new string[values.Length][];
 			int i = 0;
@@ -251,10 +285,10 @@ namespace herGame
 				i++;
 			}
 
-			return insertInto(tableName, vals);
+			return insertInto(tableName, vals, update, updateCheck);
 		}
 
-		public bool insertInto(string tableName, string values)
+		public bool insertInto(string tableName, string values, bool update = false, string updateCheck = "")
 		{
 			string[][] vals = new string[values.Split(';').Length][];
 			int i = 0;
@@ -267,7 +301,7 @@ namespace herGame
 				i++;
 			}
 
-			return insertInto(tableName, vals);
+			return insertInto(tableName, vals, update, updateCheck);
 		}
 
 		public bool update(string tableName, Dictionary<SQLiteColumn, string> values, string where)
@@ -319,7 +353,7 @@ namespace herGame
 
 		#region SELECT
 
-		public List<string[,]> select(string tableName, string[] cols, string where)
+		public SQLiteCommand GetDbContent(string tableName, string[] cols, string where)
 		{
 			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return null; }
 			object exist = checkTableExists(tableName);
@@ -338,45 +372,56 @@ namespace herGame
 
 				selectBuilder.AppendFormat(" WHERE\r\n\t {0} ", where);
 			}
-			
+
 			SQLiteCommand sqlk = new SQLiteCommand(selectBuilder.ToString(), sqlc);
-			
-			return getStringsFrom(sqlk.ExecuteReader());
+			return sqlk;
 		}
 
-		public List<string[,]> select(string tableName, SQLiteColumn[] cols, string where)
+		public List<string[][]> select(string tableName, string[] cols, string where)
+		{
+			SQLiteCommand sqlk = GetDbContent(tableName, cols, where);
+
+			return getStringsFrom(sqlk.ExecuteReader());
+		}
+		
+		public List<string[][]> select(string tableName, SQLiteColumn[] cols, string where)
 		{
 			return select(tableName, cols.ToList().Select(x => x.columnName).ToArray(), where);
 		}
 
-		public List<string[,]> select(string tableName, List<SQLiteColumn> cols, string where)
+		public List<string[][]> select(string tableName, List<SQLiteColumn> cols, string where)
 		{
 			return select(tableName, cols.Select(x => x.columnName).ToArray(), where);
 		}
 
-		public List<string[,]> select(string tableName, string cols, char delimiter, string where)
+		public List<string[][]> select(string tableName, string cols, char delimiter, string where)
 		{
 			return select(tableName, cols.Split(delimiter), where);
+		}
+
+		public List<string[][]> select(string tableName)
+		{
+			return select(tableName, "*", ',', "");
 		}
 
 		/// <summary>
 		/// Returns result data as a list of string[,]{value as string/datatype};
 		/// </summary>
-		public List<string[,]> getStringsFrom(SQLiteDataReader r)
+		public List<string[][]> getStringsFrom(SQLiteDataReader r)
 		{
-			List<string[,]> ret = null;
-			ret = new List<string[,]>();
+			List<string[][]> ret = null;
+			ret = new List<string[][]>();
 
 			if (r.HasRows)
 			{
 				while (r.Read())
 				{
-					string[,] tmpArr = new string[r.FieldCount, 2];
-
+					string[][] tmpArr = new string[r.FieldCount][];
+					string[] tmp = new string[2];
 					for (int i = 0; i < r.FieldCount; i++)
 					{
-						tmpArr[i, 0] = r.GetValue(i).ToString();
-						tmpArr[i, 1] = r.GetName(i);
+						tmp = new string[] { r.GetValue(i).ToString(), r.GetName(i) };
+						tmpArr[i] = tmp;
 					}
 
 					ret.Add(tmpArr);
@@ -405,7 +450,15 @@ namespace herGame
 		public bool pimaryKey { get; set; }
 
 		/// <summary>True if the column is AutoIncremented</summary>
-		public bool autoIncrement { get; set; }
+		public bool autoIncrement { get; set; } 
+		
+		public bool hasDefaultIntValue { get; set; }
+		/// <summary>defaultValueInInt</summary>
+		public int defaultIntValue { get; set; }
+		
+		public bool hasDefaultStringValue { get; set; }
+		/// <summary>defaultValueInstring</summary>
+		public string defaultStringValue { get; set; }
 
 		/// <summary>True if column has comment</summary>
 		private bool hasColumnComment;
@@ -434,10 +487,9 @@ namespace herGame
 		public string cCom() { return hasColumnComment ? string.Format(" /* {0} */ ", _columnComment) : ""; }
 
 		/// <summary>Used to check wheather the column content is a string value</summary> <returns>True if datatype = text</returns>
-		public bool isString()
-		{
-			return dataType == SQLiteDataType.TEXT;
-		}
+		public bool isString() { return dataType == SQLiteDataType.TEXT; }
+
+		public string vDef() { if (isString() && hasDefaultStringValue) { return " DEFAULT " + defaultStringValue; } else if (!isString() && hasDefaultIntValue) { return " DEFAULT " + defaultIntValue; } else { return ""; } }
 
 		/// <summary>Used to write the datatype of the column based on dataType value</summary> <returns>Datatype String</returns>
 		public string type()
@@ -484,7 +536,7 @@ namespace herGame
 			}
 			else
 			{
-				return string.Format(" {0} {1} {2} {3} ", columnName, type(), pKey() + aInc(), cCom());
+				return string.Format(" {0} {1} {2} {3} {4} ", columnName, type(), pKey() + aInc(), vDef(), cCom());
 			}
 		}
 	}

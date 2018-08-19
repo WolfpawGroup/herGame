@@ -24,7 +24,7 @@ namespace herGame
 			ret = Convert.ToBase64String(Encoding.ASCII.GetBytes(ret));
 			ret = "WolfPawStudios-HerGame/v01/oid=" + ret + "/(by:WolfyD)";
 
-			return ret;
+			return ret; 
 		}
 
 		public static int randomNumber()
@@ -82,10 +82,19 @@ namespace herGame
 			
 			Type ArtistType = typeof(c_Artist);
 			tables.Add("artists", getColumnListFromMethod(ArtistType));
-			
+
 			Type ImageDetailType = typeof(c_ImageDetails);
 			tables.Add("images", getColumnListFromMethod(ImageDetailType));
-			
+
+			Type TagType = typeof(c_Tags);
+			tables.Add("tags", getColumnListFromMethod(ImageDetailType));
+
+			Type HistoryType = typeof(c_History);
+			tables.Add("history", getColumnListFromMethod(ImageDetailType));
+
+			Type PlaymatesType = typeof(c_Playmates);
+			tables.Add("playmates", getColumnListFromMethod(ImageDetailType));
+
 			return tables;
 		}
 
@@ -101,7 +110,7 @@ namespace herGame
 				foreach (var att in m.GetCustomAttributes(true))
 				{
 					fieldDefinitions fd = att as fieldDefinitions;
-					if (fd != null)
+					if (fd != null && fd.partOfTable)
 					{
 						SQLiteColumn sqlCol = new SQLiteColumn()
 						{
@@ -110,8 +119,13 @@ namespace herGame
 							autoIncrement = fd.autoIncrement,
 							dataType = fd.dataType,
 							columnComment = fd.columnComment,
-							additionalData = fd.additionalData
+							additionalData = fd.additionalData,
+							hasDefaultIntValue = fd.hasDefaultIntValue,
+							hasDefaultStringValue = fd.hasDefaultStringValue
 						};
+						if (sqlCol.hasDefaultIntValue) { sqlCol.defaultIntValue = fd.defaultIntValue; }
+						if (sqlCol.hasDefaultStringValue) { sqlCol.defaultStringValue = fd.defaultStringValue; }
+
 						sqltmpcol.Add(sqlCol);
 					}
 				}

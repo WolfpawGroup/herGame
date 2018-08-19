@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace herGame
 {
-	class c_ImageDetails
+	/// <summary>
+	/// Type for images containing all relevant data
+	/// </summary>
+	public class c_ImageDetails
 	{
 		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
 		public int id {get;set;}
@@ -64,7 +67,7 @@ namespace herGame
 		public int file_size { get;set;}
 	}
 
-	class c_Image
+	public class c_Image
 	{
 		public int id { get; set; }
 		public string md5 { get; set; }
@@ -77,22 +80,156 @@ namespace herGame
 		public Size imageSize { get; set; }
 	}
 
-	class c_Artist
+	/// <summary>
+	/// Type for artists containing all relevant data
+	/// </summary>
+	public class c_Artist
+	{
+		[fieldDefinitions( partOfTable=true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		public int id { get; set; }
+
+		[fieldDefinitions( partOfTable=true, columnName = "name", dataType = SQLiteDataType.TEXT)]					//Artist name
+		public string name { get; set; } 
+		[fieldDefinitions( partOfTable=false, columnName = "hasOtherNames", dataType = SQLiteDataType.INTEGER)]		//true if artist has aliases
+		public bool hasOtherNames { get; set; }
+		[fieldDefinitions( partOfTable=true, columnName = "other_names", dataType = SQLiteDataType.TEXT)]			//Artist aliases
+		public string[] other_names { get; set; }
+		[fieldDefinitions( partOfTable=false, columnName = "hasUrls", dataType = SQLiteDataType.INTEGER)]			//true if artist has url-s
+		public bool hasUrls { get; set; }
+		[fieldDefinitions( partOfTable=true, columnName = "urls", dataType = SQLiteDataType.TEXT)]					//Artist url-s
+		public string[] urls { get; set; }
+		[fieldDefinitions( partOfTable=true, columnName = "posts", hasDefaultIntValue=true, defaultIntValue = 0, dataType = SQLiteDataType.INTEGER)]				//# of artists images
+		public int posts { get; set; }
+		[fieldDefinitions( partOfTable=true, columnName = "updated", dataType = SQLiteDataType.TEXT)]				//Last updated
+		public string updated { get; set; }
+	}
+
+	/// <summary>
+	/// Type for tags contining all relevant data
+	/// </summary>
+	public class c_Tags
 	{
 		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
 		public int id { get; set; }
-		[fieldDefinitions(columnName = "name", dataType = SQLiteDataType.TEXT)]
+
+		[fieldDefinitions(columnName = "name", dataType = SQLiteDataType.TEXT)]					//Tag name
 		public string name { get; set; }
-		[fieldDefinitions(columnName = "hasOtherNames", dataType = SQLiteDataType.INTEGER)]
-		public bool hasOtherNames { get; set; }
-		[fieldDefinitions(columnName = "other_names", dataType = SQLiteDataType.TEXT)]
-		public string[] other_names { get; set; }
-		[fieldDefinitions(columnName = "hasUrls", dataType = SQLiteDataType.INTEGER)]
-		public bool hasUrls { get; set; }
-		[fieldDefinitions(columnName = "urls", dataType = SQLiteDataType.TEXT)]
-		public string[] urls { get; set; }
-		[fieldDefinitions(columnName = "added", dataType = SQLiteDataType.TEXT)]
-		public string added { get; set; }
+		[fieldDefinitions(columnName = "count", dataType = SQLiteDataType.INTEGER)]				//Images in tag
+		public int count { get; set; }
+		[fieldDefinitions(columnName = "type", dataType = SQLiteDataType.INTEGER)]				//Type from tagType enum
+		public int type { get; set; }
+
+		//Relateds eg: related_General:[330;133;201;199]
+		[fieldDefinitions(columnName = "related_General", dataType = SQLiteDataType.TEXT)]		//Related tags in general type
+		public string related_General { get; set; }
+		[fieldDefinitions(columnName = "related_Artist", dataType = SQLiteDataType.TEXT)]		//Related tags in Artist type
+		public string related_Artist { get; set; }
+		[fieldDefinitions(columnName = "related_Copyright", dataType = SQLiteDataType.TEXT)]	//Related tags in Copyright type
+		public string related_Copyright { get; set; }
+		[fieldDefinitions(columnName = "related_Character", dataType = SQLiteDataType.TEXT)]	//Related tags in Character type
+		public string related_Character { get; set; }
+		[fieldDefinitions(columnName = "related_Species", dataType = SQLiteDataType.TEXT)]		//Related tags in Species type
+		public string related_Species { get; set; }
+
+		[fieldDefinitions(columnName = "updated", dataType = SQLiteDataType.TEXT)]              //Last updated
+		public string updated { get; set; }
+	}
+
+	/// <summary>
+	/// History of actions for downloads games and queries
+	/// </summary>
+	public class c_History
+	{
+		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		public int id { get; set; }
+
+		[fieldDefinitions(columnName = "activity", dataType = SQLiteDataType.INTEGER)]          //From activityType enum
+		public int activity { get; set; }
+		[fieldDefinitions(columnName = "additional", dataType = SQLiteDataType.TEXT)]           //Additional data / tags searched etc
+		public string additional { get; set; }
+		[fieldDefinitions(columnName = "result", dataType = SQLiteDataType.INTEGER)]			//-1/1 = Fail/Success
+		public int result { get; set; }
+
+		[fieldDefinitions(columnName = "playmate", dataType = SQLiteDataType.INTEGER)]			//If generating links, for whom
+		public int playmate { get; set; }
+		[fieldDefinitions(columnName = "no_of_items", dataType = SQLiteDataType.INTEGER)]		//Pics downloaded/images generated etc...
+		public int no_of_items { get; set; }
+		
+		[fieldDefinitions(columnName = "datetime", dataType = SQLiteDataType.TEXT)]              //time of occurance
+		public string datetime { get; set; }
+	}
+
+	/// <summary>
+	/// List of playmates with name, picture and games played
+	/// </summary>
+	public class c_Playmates
+	{
+		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		public int id { get; set; }
+
+		[fieldDefinitions(columnName = "name", dataType = SQLiteDataType.TEXT)]                 //Playmate name
+		public string name { get; set; }
+		[fieldDefinitions(columnName = "picture", dataType = SQLiteDataType.TEXT)]              //Playmate image (base64)
+		public string picture { get; set; }
+
+		[fieldDefinitions(columnName = "games_played", dataType = SQLiteDataType.INTEGER)]      //# of games played with playmate
+		public string games_played { get; set; }
+		[fieldDefinitions(columnName = "pictures_sent", dataType = SQLiteDataType.INTEGER)]     //# of pics sent to playmate
+		public string pictures_sent { get; set; }
+		[fieldDefinitions(columnName = "last_played_with", dataType = SQLiteDataType.TEXT)]     //Last time playmate played with
+		public string last_played_with { get; set; }
+	}
+
+	/// <summary>
+	/// Log of all downloaded images with path of the download directory
+	/// </summary>
+	public class c_Downloaded
+	{
+		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		public int id { get; set; }
+
+		[fieldDefinitions(columnName = "md5", dataType = SQLiteDataType.TEXT)]                  //image md5
+		public string md5 { get; set; }
+		[fieldDefinitions(columnName = "path", dataType = SQLiteDataType.TEXT)]                 //path of download
+		public string path { get; set; }
+
+		[fieldDefinitions(columnName = "datetime", dataType = SQLiteDataType.TEXT)]             //time of occurance
+		public string datetime { get; set; }
+	}
+
+	/// <summary>
+	/// Log of all sent images with id of playmate it was sent to
+	/// </summary>
+	public class c_Sent
+	{
+		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		public int id { get; set; }
+
+		[fieldDefinitions(columnName = "md5", dataType = SQLiteDataType.TEXT)]					//image md5
+		public string md5 { get; set; }
+		[fieldDefinitions(columnName = "playmate", dataType = SQLiteDataType.INTEGER)]			//path of download
+		public int playmate { get; set; }
+
+		[fieldDefinitions(columnName = "datetime", dataType = SQLiteDataType.TEXT)]				//time of occurance
+		public string datetime { get; set; }
+	}
+
+	public enum tagType
+	{
+		General,
+		Artist,
+		Copyright,
+		Character,
+		Species
+	}
+
+	public enum activityType
+	{
+		Download_tags,
+		Download_artists,
+		Download_results,
+		Save_images,
+		Generate_links
 	}
 
 	[AttributeUsage(
@@ -103,9 +240,14 @@ namespace herGame
 	{
 		public string columnName { get; set; }
 		public SQLiteDataType dataType { get; set; }
+		public bool partOfTable { get; set; }
 		public bool pimaryKey { get; set; }
 		public bool autoIncrement { get; set; }
-		
+		public bool hasDefaultIntValue { get; set; }
+		public int defaultIntValue { get; set; }
+		public bool hasDefaultStringValue { get; set; }
+		public string defaultStringValue { get; set; }
+
 		private bool hasColumnComment;
 		private string _columnComment;
 
