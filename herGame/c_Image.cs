@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace herGame
 {
@@ -12,59 +13,57 @@ namespace herGame
 	/// </summary>
 	public class c_ImageDetails
 	{
-		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
-		public int id {get;set;}
-		[fieldDefinitions(columnName = "md5", dataType = SQLiteDataType.TEXT)]
-		public string md5 {get;set;}
+		[fieldDefinitions(partOfTable = true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		public int id { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "md5", dataType = SQLiteDataType.TEXT)]
+		public string md5 { get; set; }
 
-		[fieldDefinitions(columnName = "parent_id", dataType = SQLiteDataType.INTEGER)]
-		public int parent_id {get;set;}
-		[fieldDefinitions(columnName = "has_children", dataType = SQLiteDataType.INTEGER)]
-		public bool has_children {get;set;}
-		[fieldDefinitions(columnName = "children", dataType = SQLiteDataType.TEXT)]
-		public string[] children { get;set;}
+		[fieldDefinitions(partOfTable = true, columnName = "parent_id", dataType = SQLiteDataType.INTEGER)]
+		public int parent_id { get; set; }
+		[fieldDefinitions(partOfTable = false)]
+		public bool has_children { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "children", dataType = SQLiteDataType.TEXT)]
+		public string[] children { get; set; }
 
-		[fieldDefinitions(columnName = "artist", dataType = SQLiteDataType.TEXT)]
-		public string artist {get;set;}
-		[fieldDefinitions(columnName = "source", dataType = SQLiteDataType.TEXT)]
-		public string source { get;set;}
-		[fieldDefinitions(columnName = "sources", dataType = SQLiteDataType.TEXT)]
-		public string[] sources {get;set;}
+		[fieldDefinitions(partOfTable = true, columnName = "artist", dataType = SQLiteDataType.TEXT)]
+		public string artist { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "source", dataType = SQLiteDataType.TEXT)]
+		public string source { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "sources", dataType = SQLiteDataType.TEXT)]
+		public string[] sources { get; set; }
+		
+		[fieldDefinitions(partOfTable = true, columnName = "score", dataType = SQLiteDataType.INTEGER)]
+		public int score { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "rating", dataType = SQLiteDataType.TEXT)]
+		public string rating { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "tags", dataType = SQLiteDataType.TEXT)]
+		public string tags { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "description", dataType = SQLiteDataType.TEXT)]
+		public string description { get; set; }
 
-		[fieldDefinitions(columnName = "fav_count", dataType = SQLiteDataType.INTEGER)]
-		public int fav_count { get;set;}
-		[fieldDefinitions(columnName = "score", dataType = SQLiteDataType.INTEGER)]
-		public int score { get;set;}
-		[fieldDefinitions(columnName = "rating", dataType = SQLiteDataType.TEXT)]
-		public string rating {get;set;}
-		[fieldDefinitions(columnName = "tags", dataType = SQLiteDataType.TEXT)]
-		public string tags {get;set;}
-		[fieldDefinitions(columnName = "description", dataType = SQLiteDataType.TEXT)]
-		public string description {get;set;}
+		[fieldDefinitions(partOfTable = true, columnName = "file_url", dataType = SQLiteDataType.TEXT)]
+		public string file_url { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "sample_url", dataType = SQLiteDataType.TEXT)]
+		public string sample_url { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "preview_url", dataType = SQLiteDataType.TEXT)]
+		public string preview_url { get; set; }
 
-		[fieldDefinitions(columnName = "file_url", dataType = SQLiteDataType.TEXT)]
-		public string file_url {get;set;}
-		[fieldDefinitions(columnName = "sample_url", dataType = SQLiteDataType.TEXT)]
-		public string sample_url {get;set;}
-		[fieldDefinitions(columnName = "preview_url", dataType = SQLiteDataType.TEXT)]
-		public string preview_url { get;set;}
-
-		[fieldDefinitions(columnName = "width", dataType = SQLiteDataType.INTEGER)]
-		public int width {get;set;}
-		[fieldDefinitions(columnName = "height", dataType = SQLiteDataType.INTEGER)]
-		public int height {get;set;}
-		[fieldDefinitions(columnName = "sample_width", dataType = SQLiteDataType.INTEGER)]
-		public int sample_width {get;set;}
-		[fieldDefinitions(columnName = "sample_height", dataType = SQLiteDataType.INTEGER)]
-		public int sample_height {get;set;}
-		[fieldDefinitions(columnName = "preview_width", dataType = SQLiteDataType.INTEGER)]
-		public int preview_width {get;set;}
-		[fieldDefinitions(columnName = "preview_height", dataType = SQLiteDataType.INTEGER)]
-		public int preview_height { get;set;}
-		[fieldDefinitions(columnName = "file_ext", dataType = SQLiteDataType.TEXT)]
-		public string file_ext { get;set;}
-		[fieldDefinitions(columnName = "file_size", dataType = SQLiteDataType.INTEGER)]
-		public int file_size { get;set;}
+		[fieldDefinitions(partOfTable = true, columnName = "width", dataType = SQLiteDataType.INTEGER)]
+		public int width { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "height", dataType = SQLiteDataType.INTEGER)]
+		public int height { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "sample_width", dataType = SQLiteDataType.INTEGER)]
+		public int sample_width { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "sample_height", dataType = SQLiteDataType.INTEGER)]
+		public int sample_height { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "preview_width", dataType = SQLiteDataType.INTEGER)]
+		public int preview_width { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "preview_height", dataType = SQLiteDataType.INTEGER)]
+		public int preview_height { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "file_ext", dataType = SQLiteDataType.TEXT)]
+		public string file_ext { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "file_size", dataType = SQLiteDataType.INTEGER)]
+		public int file_size { get; set; }
 	}
 
 	public class c_Image
@@ -75,7 +74,7 @@ namespace herGame
 
 		public c_ImageDetails details { get; set; }
 		public c_Artist artist { get; set; }
-		
+
 		public int fileSize { get; set; }
 		public Size imageSize { get; set; }
 	}
@@ -85,22 +84,22 @@ namespace herGame
 	/// </summary>
 	public class c_Artist
 	{
-		[fieldDefinitions( partOfTable=true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		[fieldDefinitions(partOfTable = true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
 		public int id { get; set; }
 
-		[fieldDefinitions( partOfTable=true, columnName = "name", dataType = SQLiteDataType.TEXT)]					//Artist name
-		public string name { get; set; } 
-		[fieldDefinitions( partOfTable=false, columnName = "hasOtherNames", dataType = SQLiteDataType.INTEGER)]		//true if artist has aliases
+		[fieldDefinitions(partOfTable = true, columnName = "name", dataType = SQLiteDataType.TEXT)]																	//Artist name
+		public string name { get; set; }
+		[fieldDefinitions(partOfTable = false)]																														//true if artist has aliases
 		public bool hasOtherNames { get; set; }
-		[fieldDefinitions( partOfTable=true, columnName = "other_names", dataType = SQLiteDataType.TEXT)]			//Artist aliases
+		[fieldDefinitions(partOfTable = true, columnName = "other_names", dataType = SQLiteDataType.TEXT)]															//Artist aliases
 		public string[] other_names { get; set; }
-		[fieldDefinitions( partOfTable=false, columnName = "hasUrls", dataType = SQLiteDataType.INTEGER)]			//true if artist has url-s
+		[fieldDefinitions(partOfTable = false)]																														//true if artist has url-s
 		public bool hasUrls { get; set; }
-		[fieldDefinitions( partOfTable=true, columnName = "urls", dataType = SQLiteDataType.TEXT)]					//Artist url-s
+		[fieldDefinitions(partOfTable = true, columnName = "urls", dataType = SQLiteDataType.TEXT)]																	//Artist url-s
 		public string[] urls { get; set; }
-		[fieldDefinitions( partOfTable=true, columnName = "posts", hasDefaultIntValue=true, defaultIntValue = 0, dataType = SQLiteDataType.INTEGER)]				//# of artists images
+		[fieldDefinitions(partOfTable = true, columnName = "posts", hasDefaultIntValue = true, defaultIntValue = -1, dataType = SQLiteDataType.INTEGER)]             //# of artists images
 		public int posts { get; set; }
-		[fieldDefinitions( partOfTable=true, columnName = "updated", dataType = SQLiteDataType.TEXT)]				//Last updated
+		[fieldDefinitions(partOfTable = true, columnName = "updated", dataType = SQLiteDataType.TEXT)]																//Last updated
 		public string updated { get; set; }
 	}
 
@@ -109,29 +108,29 @@ namespace herGame
 	/// </summary>
 	public class c_Tags
 	{
-		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		[fieldDefinitions(partOfTable = true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
 		public int id { get; set; }
 
-		[fieldDefinitions(columnName = "name", dataType = SQLiteDataType.TEXT)]					//Tag name
+		[fieldDefinitions(partOfTable = true, columnName = "name", dataType = SQLiteDataType.TEXT)]                 //Tag name
 		public string name { get; set; }
-		[fieldDefinitions(columnName = "count", dataType = SQLiteDataType.INTEGER)]				//Images in tag
+		[fieldDefinitions(partOfTable = true, columnName = "count", dataType = SQLiteDataType.INTEGER)]             //Images in tag
 		public int count { get; set; }
-		[fieldDefinitions(columnName = "type", dataType = SQLiteDataType.INTEGER)]				//Type from tagType enum
+		[fieldDefinitions(partOfTable = true, columnName = "type", dataType = SQLiteDataType.INTEGER)]              //Type from tagType enum
 		public int type { get; set; }
 
 		//Relateds eg: related_General:[330;133;201;199]
-		[fieldDefinitions(columnName = "related_General", dataType = SQLiteDataType.TEXT)]		//Related tags in general type
+		[fieldDefinitions(partOfTable = true, columnName = "related_General", dataType = SQLiteDataType.TEXT)]      //Related tags in general type
 		public string related_General { get; set; }
-		[fieldDefinitions(columnName = "related_Artist", dataType = SQLiteDataType.TEXT)]		//Related tags in Artist type
+		[fieldDefinitions(partOfTable = true, columnName = "related_Artist", dataType = SQLiteDataType.TEXT)]       //Related tags in Artist type
 		public string related_Artist { get; set; }
-		[fieldDefinitions(columnName = "related_Copyright", dataType = SQLiteDataType.TEXT)]	//Related tags in Copyright type
+		[fieldDefinitions(partOfTable = true, columnName = "related_Copyright", dataType = SQLiteDataType.TEXT)]    //Related tags in Copyright type
 		public string related_Copyright { get; set; }
-		[fieldDefinitions(columnName = "related_Character", dataType = SQLiteDataType.TEXT)]	//Related tags in Character type
+		[fieldDefinitions(partOfTable = true, columnName = "related_Character", dataType = SQLiteDataType.TEXT)]    //Related tags in Character type
 		public string related_Character { get; set; }
-		[fieldDefinitions(columnName = "related_Species", dataType = SQLiteDataType.TEXT)]		//Related tags in Species type
+		[fieldDefinitions(partOfTable = true, columnName = "related_Species", dataType = SQLiteDataType.TEXT)]      //Related tags in Species type
 		public string related_Species { get; set; }
 
-		[fieldDefinitions(columnName = "updated", dataType = SQLiteDataType.TEXT)]              //Last updated
+		[fieldDefinitions(partOfTable = true, columnName = "updated", dataType = SQLiteDataType.TEXT)]              //Last updated
 		public string updated { get; set; }
 	}
 
@@ -140,22 +139,22 @@ namespace herGame
 	/// </summary>
 	public class c_History
 	{
-		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		[fieldDefinitions( partOfTable=true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
 		public int id { get; set; }
 
-		[fieldDefinitions(columnName = "activity", dataType = SQLiteDataType.INTEGER)]          //From activityType enum
+		[fieldDefinitions( partOfTable=true, columnName = "activity", dataType = SQLiteDataType.INTEGER)]          //From activityType enum
 		public int activity { get; set; }
-		[fieldDefinitions(columnName = "additional", dataType = SQLiteDataType.TEXT)]           //Additional data / tags searched etc
+		[fieldDefinitions( partOfTable=true, columnName = "additional", dataType = SQLiteDataType.TEXT)]           //Additional data / tags searched etc
 		public string additional { get; set; }
-		[fieldDefinitions(columnName = "result", dataType = SQLiteDataType.INTEGER)]			//-1/1 = Fail/Success
+		[fieldDefinitions( partOfTable=true, columnName = "result", dataType = SQLiteDataType.INTEGER)]			//-1/1 = Fail/Success
 		public int result { get; set; }
 
-		[fieldDefinitions(columnName = "playmate", dataType = SQLiteDataType.INTEGER)]			//If generating links, for whom
+		[fieldDefinitions( partOfTable=true, columnName = "playmate", dataType = SQLiteDataType.INTEGER)]			//If generating links, for whom
 		public int playmate { get; set; }
-		[fieldDefinitions(columnName = "no_of_items", dataType = SQLiteDataType.INTEGER)]		//Pics downloaded/images generated etc...
+		[fieldDefinitions( partOfTable=true, columnName = "no_of_items", dataType = SQLiteDataType.INTEGER)]		//Pics downloaded/images generated etc...
 		public int no_of_items { get; set; }
 		
-		[fieldDefinitions(columnName = "datetime", dataType = SQLiteDataType.TEXT)]              //time of occurance
+		[fieldDefinitions( partOfTable=true, columnName = "datetime", dataType = SQLiteDataType.TEXT)]              //time of occurance
 		public string datetime { get; set; }
 	}
 
@@ -164,19 +163,19 @@ namespace herGame
 	/// </summary>
 	public class c_Playmates
 	{
-		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		[fieldDefinitions( partOfTable=true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
 		public int id { get; set; }
 
-		[fieldDefinitions(columnName = "name", dataType = SQLiteDataType.TEXT)]                 //Playmate name
+		[fieldDefinitions( partOfTable=true, columnName = "name", dataType = SQLiteDataType.TEXT)]                 //Playmate name
 		public string name { get; set; }
-		[fieldDefinitions(columnName = "picture", dataType = SQLiteDataType.TEXT)]              //Playmate image (base64)
+		[fieldDefinitions( partOfTable=true, columnName = "picture", dataType = SQLiteDataType.TEXT)]              //Playmate image (base64)
 		public string picture { get; set; }
 
-		[fieldDefinitions(columnName = "games_played", dataType = SQLiteDataType.INTEGER)]      //# of games played with playmate
+		[fieldDefinitions( partOfTable=true, columnName = "games_played", dataType = SQLiteDataType.INTEGER)]      //# of games played with playmate
 		public string games_played { get; set; }
-		[fieldDefinitions(columnName = "pictures_sent", dataType = SQLiteDataType.INTEGER)]     //# of pics sent to playmate
+		[fieldDefinitions( partOfTable=true, columnName = "pictures_sent", dataType = SQLiteDataType.INTEGER)]     //# of pics sent to playmate
 		public string pictures_sent { get; set; }
-		[fieldDefinitions(columnName = "last_played_with", dataType = SQLiteDataType.TEXT)]     //Last time playmate played with
+		[fieldDefinitions( partOfTable=true, columnName = "last_played_with", dataType = SQLiteDataType.TEXT)]     //Last time playmate played with
 		public string last_played_with { get; set; }
 	}
 
@@ -185,15 +184,15 @@ namespace herGame
 	/// </summary>
 	public class c_Downloaded
 	{
-		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		[fieldDefinitions( partOfTable=true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
 		public int id { get; set; }
 
-		[fieldDefinitions(columnName = "md5", dataType = SQLiteDataType.TEXT)]                  //image md5
+		[fieldDefinitions( partOfTable=true, columnName = "md5", dataType = SQLiteDataType.TEXT)]                  //image md5
 		public string md5 { get; set; }
-		[fieldDefinitions(columnName = "path", dataType = SQLiteDataType.TEXT)]                 //path of download
+		[fieldDefinitions( partOfTable=true, columnName = "path", dataType = SQLiteDataType.TEXT)]                 //path of download
 		public string path { get; set; }
 
-		[fieldDefinitions(columnName = "datetime", dataType = SQLiteDataType.TEXT)]             //time of occurance
+		[fieldDefinitions( partOfTable=true, columnName = "datetime", dataType = SQLiteDataType.TEXT)]             //time of occurance
 		public string datetime { get; set; }
 	}
 
@@ -202,15 +201,15 @@ namespace herGame
 	/// </summary>
 	public class c_Sent
 	{
-		[fieldDefinitions(columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
+		[fieldDefinitions( partOfTable=true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
 		public int id { get; set; }
 
-		[fieldDefinitions(columnName = "md5", dataType = SQLiteDataType.TEXT)]					//image md5
+		[fieldDefinitions( partOfTable=true, columnName = "md5", dataType = SQLiteDataType.TEXT)]					//image md5
 		public string md5 { get; set; }
-		[fieldDefinitions(columnName = "playmate", dataType = SQLiteDataType.INTEGER)]			//path of download
+		[fieldDefinitions( partOfTable=true, columnName = "playmate", dataType = SQLiteDataType.INTEGER)]			//path of download
 		public int playmate { get; set; }
 
-		[fieldDefinitions(columnName = "datetime", dataType = SQLiteDataType.TEXT)]				//time of occurance
+		[fieldDefinitions( partOfTable=true, columnName = "datetime", dataType = SQLiteDataType.TEXT)]				//time of occurance
 		public string datetime { get; set; }
 	}
 
@@ -266,4 +265,13 @@ namespace herGame
 				isAdditionalData = value.Length > 0; }
 		}
 	}
+
+	public class myDataGridView : DataGridView
+	{
+		protected override void OnColumnHeaderMouseClick(DataGridViewCellMouseEventArgs e)
+		{
+			base.OnColumnHeaderMouseClick(e);
+		}
+	}
+
 }

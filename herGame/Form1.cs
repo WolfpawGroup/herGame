@@ -28,6 +28,8 @@ namespace herGame
 		{
 			fixPaginationLayout();
 			c_Functions.initializeSQL(cs);
+			loadArtists();
+			btn_DLC.DropDown.Width = 100;
 		}
 
 		protected override CreateParams CreateParams
@@ -174,9 +176,77 @@ namespace herGame
 			sep_Pages_Sep2.Margin = new Padding(qrw, 0, qrw, 0);
 		}
 
+		public void loadArtists()
+		{
+			var lst = cs.select("artists", "name", ';', "");
+			var vst = lst.Select(x => x[0][0]);
+			tb_ArtistName.Items.AddRange(vst.ToArray());
+		}
+
 		private void btn_FindWorks_Click(object sender, EventArgs e)
 		{
-			Console.WriteLine(c_Functions.getUserAgent());
+
+		}
+
+		private void btn_Artists_Click(object sender, EventArgs e)
+		{
+			f_Artists fa = new f_Artists();
+			fa.cs = cs;
+			fa.ShowDialog();
+			
+		}
+		
+		private void tb_ArtistName_TextUpdate(object sender, EventArgs e)
+		{
+			if (tb_ArtistName.Items.OfType<string>().Select(x => x.ToLower()).Contains(tb_ArtistName.Text.ToLower()))
+			{
+				tb_ArtistName.Text = tb_ArtistName.Items.OfType<string>().Where(x => x.ToLower() == tb_ArtistName.Text.ToLower()).First();
+				int cnt = getArtistCount(tb_ArtistName.Text);
+				if(cnt > -1) { lbl_numOfWorks.Text = cnt + ""; }
+			}
+		}
+
+		public int getArtistCount(string name)
+		{
+			int ret = -1;
+
+			ret = cs.checkCountInTags(name);
+
+			if(ret == -1)
+			{
+				ret = c_Downloader.getArtistPosts(cs, name);
+			}
+
+			if (ret != -1)
+			{
+				cs.runNonQuery(string.Format("UPDATE artists SET posts={0} WHERE name='{1}'", ret, name));
+			}
+
+			return ret;
+		}
+
+		private void btn_DLC_DropDownOpening(object sender, EventArgs e)
+		{
+		}
+
+		private void btn_DLC_TagsMode_Click(object sender, EventArgs e)
+		{
+			tb_ArtistName.Visible = false;
+			tb_Tags.Visible = true;
+			lbl_ArtistName.Text = "Tags: ";
+			lbl_ArtistName.Width = 80;
+			lbl_numOfWorks.Text = "";
+			lbl_numOfWorks.Padding = new Padding(0, 0, 13, 0);
+		}
+
+		private void btn_DLC_ArtistMode_Click(object sender, EventArgs e)
+		{
+			tb_ArtistName.Visible = true;
+			tb_Tags.Visible = false;
+			lbl_ArtistName.Text = "Artist Name: ";
+			lbl_ArtistName.Width = 80;
+			lbl_numOfWorks.Text = "0";
+			lbl_numOfWorks.Padding = new Padding(0, 0, 0, 0);
 		}
 	}
 }

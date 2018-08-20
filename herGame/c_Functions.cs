@@ -87,13 +87,13 @@ namespace herGame
 			tables.Add("images", getColumnListFromMethod(ImageDetailType));
 
 			Type TagType = typeof(c_Tags);
-			tables.Add("tags", getColumnListFromMethod(ImageDetailType));
+			tables.Add("tags", getColumnListFromMethod(TagType));
 
 			Type HistoryType = typeof(c_History);
-			tables.Add("history", getColumnListFromMethod(ImageDetailType));
+			tables.Add("history", getColumnListFromMethod(HistoryType));
 
 			Type PlaymatesType = typeof(c_Playmates);
-			tables.Add("playmates", getColumnListFromMethod(ImageDetailType));
+			tables.Add("playmates", getColumnListFromMethod(PlaymatesType));
 
 			return tables;
 		}

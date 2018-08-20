@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using System.Data.SQLite;
+using System.Windows.Forms;
 
 namespace herGame
 {
@@ -13,6 +14,7 @@ namespace herGame
 		/// <summary>SQLite Connection to be used with the functions</summary>
 		public SQLiteConnection sqlc { get; set; }
 		private List<int> connectedList = new List<int> { 1, 4, 8 };
+		StringBuilder insertBuilderBuilder = new StringBuilder();
 
 		#region Create DB File
 
@@ -52,6 +54,7 @@ namespace herGame
 			try
 			{
 				sqlc = connectToDB(dbname);
+				
 				return true;
 			}
 			catch
@@ -114,7 +117,7 @@ namespace herGame
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("ERROR:SQLC → SQL query returned error: \r\n" + ex.ToString());
+				Console.WriteLine("ERROR:SQLC → SQL query returned error: \r\n" + ex.Message);
 				return false;
 			}
 
@@ -158,13 +161,16 @@ namespace herGame
 			StringBuilder tableBuilder = new StringBuilder(string.Format("CREATE TABLE {0} \r\n" +
 																				"(", tableName));
 
+			string indexes = "";
+
 			foreach (SQLiteColumn c in columns)
 			{
 				tableBuilder.AppendFormat(" {0} ", c.getColumnDLL());
 				if(!columns.Last().Equals(c)) { tableBuilder.Append(", \r\n"); }
+				indexes += string.Format("\r\nCREATE INDEX {0} ON {1}({2});", tableName + "_" + c.columnName, tableName, c.columnName);
 			}
 
-			tableBuilder.Append("\r\n); ");
+			tableBuilder.Append("\r\n); " + indexes);
 
 			return runNonQuery(tableBuilder.ToString()) == true;
 		}
@@ -183,82 +189,124 @@ namespace herGame
 
 		#region INSERT/UPDATE/DELETE
 
+		public void buildInsert(string tableName, string[][] values, bool runInsert = false)
+		{
+			string template = "";
+			bool first = false;
+
+			if (insertBuilderBuilder.Length == 0)
+			{
+				insertBuilderBuilder.Append(string.Format("INSERT OR REPLACE INTO {0} \r\n\t", tableName));
+				first = true;
+			}
+
+			string columns = "(";
+			string vals = "(";
+			string id = "";
+
+			foreach (var v in values)
+			{
+				columns += v[0];
+
+				template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
+
+				if (v[0] == "id") { id = string.Format(template, v[2]); }
+
+				vals += string.Format(template, v[2].Replace("'","''"));
+				
+				if (!values.Last().Equals(v))
+				{
+					columns += ", ";
+					vals += ", ";
+				}
+				else
+				{
+					columns += ")\r\n VALUES\r\n\t ";
+					vals += ")";
+					if (!runInsert) { vals += ",\r\n"; }
+				}
+			}
+			if (first)
+			{
+				insertBuilderBuilder.AppendFormat(" {0} {1} ", columns, vals);
+			}
+			else
+			{
+				insertBuilderBuilder.AppendFormat(" {0} ", vals);
+			}
+			/*
+			try
+			{
+				new SQLiteCommand(insertBuilderBuilder.ToString().Trim(new char[]{ ',','\r','\n', ' ','	' }), sqlc).VerifyOnly();
+			}
+			catch(Exception ex)
+			{
+				MessageBox.Show(ex.ToString());
+			}
+			*/
+			if (runInsert)
+			{
+				runNonQuery(insertBuilderBuilder.ToString());
+				insertBuilderBuilder.Clear();
+			}
+		}
+
 		/// <summary>
 		/// Insert data into selected table
 		/// </summary>
 		/// <param name="values">string[][Column Name|Column is String ("true"/"false")|Column Value]</param>
-		public bool insertInto(string tableName, string[][] values, bool update = false, string updateCheck = "")
+		public bool insertInto(string tableName, string[][] values)
 		{
 			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return false; }
 			object exist = checkTableExists(tableName);
 			if (exist == null || !(bool)exist) { return false; }
 
 			StringBuilder insertBuilder = new StringBuilder();
+			StringBuilder updateBuilder = new StringBuilder();
 			string template = "";
 
-			bool needUpdate = false;
+			insertBuilder.Append(string.Format("INSERT INTO {0} \r\n\t", tableName));
+			updateBuilder.Append(string.Format("UPDATE {0} \r\n\tSET\r\n\t ", tableName));
 
-			if (update && updateCheck != "")
+			string columns = "(";
+			string vals = "(";
+			string id = "";
+
+			foreach (var v in values)
 			{
-				string sel = "SELECT count(id) FROM " + tableName + " WHERE " + updateCheck;
-				SQLiteCommand sqc = new SQLiteCommand(sel, sqlc);
-				int i = Convert.ToInt32(sqc.ExecuteScalar());
-				if(i > 0) { needUpdate = true; }
-			}
+				columns += v[0];
 
-			if (!needUpdate)
-			{
+				template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
 
-				insertBuilder.Append(string.Format("INSERT INTO {0} \r\n\t", tableName));
+				if (v[0] == "id") { id = string.Format(template, v[2]); }
 
-				string columns = "(";
-				string vals = "(";
-				
+				vals += string.Format(template, v[2]);
 
-				foreach (var v in values)
+				updateBuilder.Append(string.Format(" {0}={1} ", v[0], string.Format(template, v[2])));
+
+				if (!values.Last().Equals(v))
 				{
-					columns += v[0];
-
-					template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
-
-					vals += string.Format(template, v[2]);
-
-					if (!values.Last().Equals(v))
-					{
-						columns += ", ";
-						vals += ", ";
-					}
-					else
-					{
-						columns += ")\r\n VALUES\r\n\t ";
-						vals += ");";
-					}
+					columns += ", ";
+					vals += ", ";
+					updateBuilder.Append(",\r\n\t");
 				}
-
-				insertBuilder.AppendFormat(" {0} {1} ", columns, vals);
-			}
-			else
-			{
-				insertBuilder.Append(string.Format("UPDATE {0} \r\n\tSET ", tableName));
-				foreach (var v in values)
+				else
 				{
-					string col = v[0];
-
-					template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
-
-					string val = string.Format(template, v[2]);
-
-					insertBuilder.Append(string.Format(" {0}={1}", col, val));
-					if (!values.Last().Equals(v)) { insertBuilder.Append(", "); }
+					columns += ")\r\n VALUES\r\n\t ";
+					vals += ");";
 				}
-
-				insertBuilder.Append(string.Format(" \r\n WHERE {0}", updateCheck));
 			}
 
-			return runNonQuery(insertBuilder.ToString()) == true;
+			updateBuilder.Append(string.Format(" WHERE id={0} ", id));
+
+			insertBuilder.AppendFormat(" {0} {1} ", columns, vals);
+
+			bool ret = runNonQuery(insertBuilder.ToString()) == true;// || runNonQuery(updateBuilder.ToString()) == true;
+			
+			return ret;
 		}
 
-		public bool insertInto(string tableName, Dictionary<SQLiteColumn, string> values, bool update = false, string updateCheck = "")
+		public bool insertInto(string tableName, Dictionary<SQLiteColumn, string> values)
 		{
 			string[][] vals = new string[values.Count][];
 			int i = 0;
@@ -269,10 +317,10 @@ namespace herGame
 				i++;
 			}
 
-			return insertInto(tableName, vals, update, updateCheck);
+			return insertInto(tableName, vals);
 		}
 
-		public bool insertInto(string tableName, string[] values, bool update = false, string updateCheck = "")
+		public bool insertInto(string tableName, string[] values)
 		{
 			string[][] vals = new string[values.Length][];
 			int i = 0;
@@ -285,10 +333,10 @@ namespace herGame
 				i++;
 			}
 
-			return insertInto(tableName, vals, update, updateCheck);
+			return insertInto(tableName, vals);
 		}
 
-		public bool insertInto(string tableName, string values, bool update = false, string updateCheck = "")
+		public bool insertInto(string tableName, string values)
 		{
 			string[][] vals = new string[values.Split(';').Length][];
 			int i = 0;
@@ -301,7 +349,7 @@ namespace herGame
 				i++;
 			}
 
-			return insertInto(tableName, vals, update, updateCheck);
+			return insertInto(tableName, vals);
 		}
 
 		public bool update(string tableName, Dictionary<SQLiteColumn, string> values, string where)
@@ -314,7 +362,7 @@ namespace herGame
 
 			foreach (var v in values)
 			{
-				updateBuilder.AppendFormat(" {0}={1}",v.Key.columnName,v.Key.isString() ? "'" + v.Value + "'" : v.Value);
+				updateBuilder.AppendFormat(" {0}={1}",v.Key.columnName,v.Key.isString() ? "'" + v.Value.Replace("'","''") + "'" : v.Value.Replace("'", "''"));
 				
 				if (!values.Last().Equals(v))
 				{
@@ -329,7 +377,7 @@ namespace herGame
 			return runNonQuery(updateBuilder.ToString()) == true;
 		}
 
-		public bool deleteFrom(string tableName, string where)
+		public bool deleteFrom(string tableName, string where = "")
 		{
 			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return false; }
 			object exist = checkTableExists(tableName);
@@ -345,6 +393,8 @@ namespace herGame
 
 				deleteBuilder.AppendFormat(" WHERE\r\n\t {0} ", where);
 			}
+
+			deleteBuilder.Append("; vacuum;");
 
 			return runNonQuery(deleteBuilder.ToString()) == true;
 		}
@@ -375,6 +425,19 @@ namespace herGame
 
 			SQLiteCommand sqlk = new SQLiteCommand(selectBuilder.ToString(), sqlc);
 			return sqlk;
+		}
+
+		public SQLiteDataReader runSelect(string sql)
+		{
+			try
+			{
+				SQLiteCommand sc = new SQLiteCommand(sql, sqlc);
+				return sc.ExecuteReader();
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		public List<string[][]> select(string tableName, string[] cols, string where)
@@ -432,7 +495,16 @@ namespace herGame
 		}
 
 		#endregion
+		
+		public int checkCountInTags(string name)
+		{
+			int ret = -1;
 
+			SQLiteCommand s = new SQLiteCommand("SELECT COALESCE(NULLIF(a.posts,-1),NULLIF(t.count,-1),-1) as posts FROM artists a LEFT JOIN tags t ON t.name=a.name WHERE a.name='" + name + "'", sqlc);
+			ret = Convert.ToInt32(s.ExecuteScalar());
+			
+			return ret;
+		}
 
 	}
 	

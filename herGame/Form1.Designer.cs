@@ -31,11 +31,23 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.btn_DLC = new System.Windows.Forms.ToolStripDropDownButton();
+			this.btn_DLC_ArtistMode = new System.Windows.Forms.ToolStripMenuItem();
+			this.btn_DLC_TagsMode = new System.Windows.Forms.ToolStripMenuItem();
 			this.lbl_ArtistName = new System.Windows.Forms.ToolStripLabel();
-			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-			this.tb_ArtistName = new System.Windows.Forms.ToolStripTextBox();
+			this.tb_ArtistName = new System.Windows.Forms.ToolStripComboBox();
+			this.lbl_numOfWorks = new System.Windows.Forms.ToolStripLabel();
+			this.tb_Tags = new System.Windows.Forms.ToolStripComboBox();
 			this.btn_FindWorks = new System.Windows.Forms.ToolStripButton();
 			this.btn_Settings = new System.Windows.Forms.ToolStripButton();
+			this.sep_02 = new System.Windows.Forms.ToolStripSeparator();
+			this.btn_Logs = new System.Windows.Forms.ToolStripButton();
+			this.btn_Images = new System.Windows.Forms.ToolStripButton();
+			this.btn_Tags = new System.Windows.Forms.ToolStripButton();
+			this.btn_Artists = new System.Windows.Forms.ToolStripButton();
+			this.sep_01 = new System.Windows.Forms.ToolStripSeparator();
+			this.btn_PlayMates = new System.Windows.Forms.ToolStripDropDownButton();
+			this.cb_PlayMates = new System.Windows.Forms.ToolStripComboBox();
 			this.p_Options = new System.Windows.Forms.Panel();
 			this.btn_Options_SetupDownload = new System.Windows.Forms.Button();
 			this.btn_Options_Cancel = new System.Windows.Forms.Button();
@@ -47,6 +59,13 @@
 			this.rb_RandomImages = new System.Windows.Forms.RadioButton();
 			this.rb_AllImages = new System.Windows.Forms.RadioButton();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.lv_Images = new System.Windows.Forms.ListView();
+			this.ch_ImageListIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.c_ImageListMd5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ch_ImageListSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ch_ImageListScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ch_ImageListShared = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.statusStrip2 = new System.Windows.Forms.StatusStrip();
 			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
 			this.btn_Pages_Previous = new System.Windows.Forms.ToolStripButton();
 			this.sep_Pages_Sep1 = new System.Windows.Forms.ToolStripSeparator();
@@ -64,13 +83,6 @@
 			this.btn_ImageListDelete = new System.Windows.Forms.Button();
 			this.tp_Output = new System.Windows.Forms.TabPage();
 			this.pb_PreviewImage = new System.Windows.Forms.PictureBox();
-			this.statusStrip2 = new System.Windows.Forms.StatusStrip();
-			this.lv_Images = new System.Windows.Forms.ListView();
-			this.ch_ImageListIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.c_ImageListMd5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ch_ImageListSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ch_ImageListScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ch_ImageListShared = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.toolStrip1.SuspendLayout();
 			this.p_Options.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.num_RandomImages)).BeginInit();
@@ -101,11 +113,20 @@
 			this.toolStrip1.BackColor = System.Drawing.Color.Transparent;
 			this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btn_DLC,
             this.lbl_ArtistName,
-            this.toolStripButton1,
             this.tb_ArtistName,
+            this.tb_Tags,
+            this.lbl_numOfWorks,
             this.btn_FindWorks,
-            this.btn_Settings});
+            this.btn_Settings,
+            this.sep_02,
+            this.btn_Logs,
+            this.btn_Images,
+            this.btn_Tags,
+            this.btn_Artists,
+            this.sep_01,
+            this.btn_PlayMates});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -113,25 +134,70 @@
 			this.toolStrip1.TabIndex = 1;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
+			// btn_DLC
+			// 
+			this.btn_DLC.AutoSize = false;
+			this.btn_DLC.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.btn_DLC.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btn_DLC_ArtistMode,
+            this.btn_DLC_TagsMode});
+			this.btn_DLC.Image = ((System.Drawing.Image)(resources.GetObject("btn_DLC.Image")));
+			this.btn_DLC.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btn_DLC.Name = "btn_DLC";
+			this.btn_DLC.Size = new System.Drawing.Size(42, 22);
+			this.btn_DLC.Text = "DLC";
+			this.btn_DLC.DropDownOpening += new System.EventHandler(this.btn_DLC_DropDownOpening);
+			// 
+			// btn_DLC_ArtistMode
+			// 
+			this.btn_DLC_ArtistMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.btn_DLC_ArtistMode.Name = "btn_DLC_ArtistMode";
+			this.btn_DLC_ArtistMode.Size = new System.Drawing.Size(180, 22);
+			this.btn_DLC_ArtistMode.Text = "Artist Mode";
+			this.btn_DLC_ArtistMode.Click += new System.EventHandler(this.btn_DLC_ArtistMode_Click);
+			// 
+			// btn_DLC_TagsMode
+			// 
+			this.btn_DLC_TagsMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.btn_DLC_TagsMode.Name = "btn_DLC_TagsMode";
+			this.btn_DLC_TagsMode.Size = new System.Drawing.Size(180, 22);
+			this.btn_DLC_TagsMode.Text = "Tags Mode";
+			this.btn_DLC_TagsMode.Click += new System.EventHandler(this.btn_DLC_TagsMode_Click);
+			// 
 			// lbl_ArtistName
 			// 
+			this.lbl_ArtistName.AutoSize = false;
+			this.lbl_ArtistName.Margin = new System.Windows.Forms.Padding(0);
 			this.lbl_ArtistName.Name = "lbl_ArtistName";
-			this.lbl_ArtistName.Size = new System.Drawing.Size(76, 22);
+			this.lbl_ArtistName.Size = new System.Drawing.Size(80, 22);
 			this.lbl_ArtistName.Text = "Artist Name: ";
-			// 
-			// toolStripButton1
-			// 
-			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButton1.Text = "toolStripButton1";
+			this.lbl_ArtistName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// tb_ArtistName
 			// 
+			this.tb_ArtistName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.tb_ArtistName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.tb_ArtistName.DropDownWidth = 140;
+			this.tb_ArtistName.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
 			this.tb_ArtistName.Name = "tb_ArtistName";
-			this.tb_ArtistName.Size = new System.Drawing.Size(200, 25);
+			this.tb_ArtistName.Size = new System.Drawing.Size(140, 25);
+			this.tb_ArtistName.SelectedIndexChanged += new System.EventHandler(this.tb_ArtistName_TextUpdate);
+			// 
+			// lbl_numOfWorks
+			// 
+			this.lbl_numOfWorks.Name = "lbl_numOfWorks";
+			this.lbl_numOfWorks.Size = new System.Drawing.Size(13, 22);
+			this.lbl_numOfWorks.Text = "0";
+			// 
+			// tb_Tags
+			// 
+			this.tb_Tags.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.tb_Tags.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.tb_Tags.DropDownWidth = 140;
+			this.tb_Tags.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
+			this.tb_Tags.Name = "tb_Tags";
+			this.tb_Tags.Size = new System.Drawing.Size(140, 25);
+			this.tb_Tags.Visible = false;
 			// 
 			// btn_FindWorks
 			// 
@@ -156,6 +222,76 @@
 			this.btn_Settings.Text = "Settings";
 			this.btn_Settings.Click += new System.EventHandler(this.btn_Settings_Click);
 			// 
+			// sep_02
+			// 
+			this.sep_02.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.sep_02.Name = "sep_02";
+			this.sep_02.Size = new System.Drawing.Size(6, 25);
+			// 
+			// btn_Logs
+			// 
+			this.btn_Logs.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.btn_Logs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.btn_Logs.Image = ((System.Drawing.Image)(resources.GetObject("btn_Logs.Image")));
+			this.btn_Logs.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btn_Logs.Name = "btn_Logs";
+			this.btn_Logs.Size = new System.Drawing.Size(23, 22);
+			this.btn_Logs.ToolTipText = "Logs";
+			// 
+			// btn_Images
+			// 
+			this.btn_Images.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.btn_Images.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.btn_Images.Image = ((System.Drawing.Image)(resources.GetObject("btn_Images.Image")));
+			this.btn_Images.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btn_Images.Name = "btn_Images";
+			this.btn_Images.Size = new System.Drawing.Size(23, 22);
+			this.btn_Images.ToolTipText = "Images";
+			// 
+			// btn_Tags
+			// 
+			this.btn_Tags.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.btn_Tags.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.btn_Tags.Image = ((System.Drawing.Image)(resources.GetObject("btn_Tags.Image")));
+			this.btn_Tags.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btn_Tags.Name = "btn_Tags";
+			this.btn_Tags.Size = new System.Drawing.Size(23, 22);
+			this.btn_Tags.ToolTipText = "Tags";
+			// 
+			// btn_Artists
+			// 
+			this.btn_Artists.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.btn_Artists.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.btn_Artists.Image = ((System.Drawing.Image)(resources.GetObject("btn_Artists.Image")));
+			this.btn_Artists.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btn_Artists.Name = "btn_Artists";
+			this.btn_Artists.Size = new System.Drawing.Size(23, 22);
+			this.btn_Artists.ToolTipText = "Artists";
+			this.btn_Artists.Click += new System.EventHandler(this.btn_Artists_Click);
+			// 
+			// sep_01
+			// 
+			this.sep_01.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.sep_01.Name = "sep_01";
+			this.sep_01.Size = new System.Drawing.Size(6, 25);
+			// 
+			// btn_PlayMates
+			// 
+			this.btn_PlayMates.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.btn_PlayMates.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.btn_PlayMates.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cb_PlayMates});
+			this.btn_PlayMates.Image = ((System.Drawing.Image)(resources.GetObject("btn_PlayMates.Image")));
+			this.btn_PlayMates.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btn_PlayMates.Name = "btn_PlayMates";
+			this.btn_PlayMates.Size = new System.Drawing.Size(124, 22);
+			this.btn_PlayMates.Text = "--- No Playmate ---";
+			// 
+			// cb_PlayMates
+			// 
+			this.cb_PlayMates.Name = "cb_PlayMates";
+			this.cb_PlayMates.Size = new System.Drawing.Size(121, 23);
+			// 
 			// p_Options
 			// 
 			this.p_Options.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -169,7 +305,7 @@
 			this.p_Options.Controls.Add(this.label1);
 			this.p_Options.Controls.Add(this.rb_RandomImages);
 			this.p_Options.Controls.Add(this.rb_AllImages);
-			this.p_Options.Location = new System.Drawing.Point(560, 24);
+			this.p_Options.Location = new System.Drawing.Point(560, 25);
 			this.p_Options.Name = "p_Options";
 			this.p_Options.Size = new System.Drawing.Size(240, 0);
 			this.p_Options.TabIndex = 2;
@@ -301,6 +437,58 @@
 			this.splitContainer1.SplitterDistance = 392;
 			this.splitContainer1.TabIndex = 3;
 			// 
+			// lv_Images
+			// 
+			this.lv_Images.CheckBoxes = true;
+			this.lv_Images.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.ch_ImageListIndex,
+            this.c_ImageListMd5,
+            this.ch_ImageListSize,
+            this.ch_ImageListScore,
+            this.ch_ImageListShared});
+			this.lv_Images.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lv_Images.FullRowSelect = true;
+			this.lv_Images.GridLines = true;
+			this.lv_Images.Location = new System.Drawing.Point(0, 25);
+			this.lv_Images.Name = "lv_Images";
+			this.lv_Images.Size = new System.Drawing.Size(392, 356);
+			this.lv_Images.TabIndex = 2;
+			this.lv_Images.UseCompatibleStateImageBehavior = false;
+			this.lv_Images.View = System.Windows.Forms.View.Details;
+			// 
+			// ch_ImageListIndex
+			// 
+			this.ch_ImageListIndex.Text = "#";
+			this.ch_ImageListIndex.Width = 46;
+			// 
+			// c_ImageListMd5
+			// 
+			this.c_ImageListMd5.Text = "MD5";
+			this.c_ImageListMd5.Width = 175;
+			// 
+			// ch_ImageListSize
+			// 
+			this.ch_ImageListSize.Text = "Size";
+			this.ch_ImageListSize.Width = 72;
+			// 
+			// ch_ImageListScore
+			// 
+			this.ch_ImageListScore.Text = "Score";
+			this.ch_ImageListScore.Width = 45;
+			// 
+			// ch_ImageListShared
+			// 
+			this.ch_ImageListShared.Text = "Shared";
+			this.ch_ImageListShared.Width = 46;
+			// 
+			// statusStrip2
+			// 
+			this.statusStrip2.Location = new System.Drawing.Point(0, 381);
+			this.statusStrip2.Name = "statusStrip2";
+			this.statusStrip2.Size = new System.Drawing.Size(392, 22);
+			this.statusStrip2.TabIndex = 1;
+			this.statusStrip2.Text = "statusStrip2";
+			// 
 			// toolStrip2
 			// 
 			this.toolStrip2.BackColor = System.Drawing.SystemColors.Control;
@@ -390,7 +578,7 @@
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.pb_PreviewImage);
 			this.splitContainer2.Size = new System.Drawing.Size(404, 403);
-			this.splitContainer2.SplitterDistance = 174;
+			this.splitContainer2.SplitterDistance = 173;
 			this.splitContainer2.TabIndex = 0;
 			// 
 			// tabControl1
@@ -401,7 +589,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(404, 174);
+			this.tabControl1.Size = new System.Drawing.Size(404, 173);
 			this.tabControl1.TabIndex = 0;
 			// 
 			// tp_List
@@ -411,7 +599,7 @@
 			this.tp_List.Location = new System.Drawing.Point(4, 22);
 			this.tp_List.Name = "tp_List";
 			this.tp_List.Padding = new System.Windows.Forms.Padding(3);
-			this.tp_List.Size = new System.Drawing.Size(396, 148);
+			this.tp_List.Size = new System.Drawing.Size(396, 147);
 			this.tp_List.TabIndex = 0;
 			this.tp_List.Text = "List of Images";
 			this.tp_List.UseVisualStyleBackColor = true;
@@ -425,7 +613,7 @@
 			this.lv_ImageList.GridLines = true;
 			this.lv_ImageList.Location = new System.Drawing.Point(3, 3);
 			this.lv_ImageList.Name = "lv_ImageList";
-			this.lv_ImageList.Size = new System.Drawing.Size(343, 142);
+			this.lv_ImageList.Size = new System.Drawing.Size(343, 141);
 			this.lv_ImageList.TabIndex = 1;
 			this.lv_ImageList.UseCompatibleStateImageBehavior = false;
 			this.lv_ImageList.View = System.Windows.Forms.View.Details;
@@ -441,7 +629,7 @@
 			this.btn_ImageListDelete.Enabled = false;
 			this.btn_ImageListDelete.Location = new System.Drawing.Point(346, 3);
 			this.btn_ImageListDelete.Name = "btn_ImageListDelete";
-			this.btn_ImageListDelete.Size = new System.Drawing.Size(47, 142);
+			this.btn_ImageListDelete.Size = new System.Drawing.Size(47, 141);
 			this.btn_ImageListDelete.TabIndex = 0;
 			this.btn_ImageListDelete.Text = "Delete";
 			this.btn_ImageListDelete.UseVisualStyleBackColor = true;
@@ -451,7 +639,7 @@
 			this.tp_Output.Location = new System.Drawing.Point(4, 22);
 			this.tp_Output.Name = "tp_Output";
 			this.tp_Output.Padding = new System.Windows.Forms.Padding(3);
-			this.tp_Output.Size = new System.Drawing.Size(396, 148);
+			this.tp_Output.Size = new System.Drawing.Size(396, 147);
 			this.tp_Output.TabIndex = 1;
 			this.tp_Output.Text = "Output";
 			this.tp_Output.UseVisualStyleBackColor = true;
@@ -462,70 +650,18 @@
 			this.pb_PreviewImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pb_PreviewImage.Location = new System.Drawing.Point(0, 0);
 			this.pb_PreviewImage.Name = "pb_PreviewImage";
-			this.pb_PreviewImage.Size = new System.Drawing.Size(404, 225);
+			this.pb_PreviewImage.Size = new System.Drawing.Size(404, 226);
 			this.pb_PreviewImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pb_PreviewImage.TabIndex = 0;
 			this.pb_PreviewImage.TabStop = false;
-			// 
-			// statusStrip2
-			// 
-			this.statusStrip2.Location = new System.Drawing.Point(0, 381);
-			this.statusStrip2.Name = "statusStrip2";
-			this.statusStrip2.Size = new System.Drawing.Size(392, 22);
-			this.statusStrip2.TabIndex = 1;
-			this.statusStrip2.Text = "statusStrip2";
-			// 
-			// lv_Images
-			// 
-			this.lv_Images.CheckBoxes = true;
-			this.lv_Images.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.ch_ImageListIndex,
-            this.c_ImageListMd5,
-            this.ch_ImageListSize,
-            this.ch_ImageListScore,
-            this.ch_ImageListShared});
-			this.lv_Images.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lv_Images.FullRowSelect = true;
-			this.lv_Images.GridLines = true;
-			this.lv_Images.Location = new System.Drawing.Point(0, 25);
-			this.lv_Images.Name = "lv_Images";
-			this.lv_Images.Size = new System.Drawing.Size(392, 356);
-			this.lv_Images.TabIndex = 2;
-			this.lv_Images.UseCompatibleStateImageBehavior = false;
-			this.lv_Images.View = System.Windows.Forms.View.Details;
-			// 
-			// ch_ImageListIndex
-			// 
-			this.ch_ImageListIndex.Text = "#";
-			this.ch_ImageListIndex.Width = 46;
-			// 
-			// c_ImageListMd5
-			// 
-			this.c_ImageListMd5.Text = "MD5";
-			this.c_ImageListMd5.Width = 175;
-			// 
-			// ch_ImageListSize
-			// 
-			this.ch_ImageListSize.Text = "Size";
-			this.ch_ImageListSize.Width = 72;
-			// 
-			// ch_ImageListScore
-			// 
-			this.ch_ImageListScore.Text = "Score";
-			this.ch_ImageListScore.Width = 45;
-			// 
-			// ch_ImageListShared
-			// 
-			this.ch_ImageListShared.Text = "Shared";
-			this.ch_ImageListShared.Width = 46;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
-			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.p_Options);
+			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.statusStrip1);
 			this.DoubleBuffered = true;
@@ -560,7 +696,7 @@
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripLabel lbl_ArtistName;
-		private System.Windows.Forms.ToolStripTextBox tb_ArtistName;
+		private System.Windows.Forms.ToolStripComboBox tb_ArtistName;
 		private System.Windows.Forms.ToolStripButton btn_FindWorks;
 		private System.Windows.Forms.ToolStripButton btn_Settings;
 		private System.Windows.Forms.Panel p_Options;
@@ -591,7 +727,6 @@
 		private System.Windows.Forms.ToolStripButton btn_Pages_Goto;
 		private System.Windows.Forms.ToolStripSeparator sep_Pages_Sep2;
 		private System.Windows.Forms.ToolStripButton btn_Pages_Next;
-		private System.Windows.Forms.ToolStripButton toolStripButton1;
 		private System.Windows.Forms.ListView lv_Images;
 		private System.Windows.Forms.ColumnHeader ch_ImageListIndex;
 		private System.Windows.Forms.ColumnHeader c_ImageListMd5;
@@ -599,6 +734,19 @@
 		private System.Windows.Forms.ColumnHeader ch_ImageListScore;
 		private System.Windows.Forms.ColumnHeader ch_ImageListShared;
 		private System.Windows.Forms.StatusStrip statusStrip2;
+		private System.Windows.Forms.ToolStripSeparator sep_02;
+		private System.Windows.Forms.ToolStripButton btn_Logs;
+		private System.Windows.Forms.ToolStripButton btn_Images;
+		private System.Windows.Forms.ToolStripButton btn_Tags;
+		private System.Windows.Forms.ToolStripButton btn_Artists;
+		private System.Windows.Forms.ToolStripSeparator sep_01;
+		private System.Windows.Forms.ToolStripDropDownButton btn_PlayMates;
+		private System.Windows.Forms.ToolStripComboBox cb_PlayMates;
+		private System.Windows.Forms.ToolStripLabel lbl_numOfWorks;
+		private System.Windows.Forms.ToolStripDropDownButton btn_DLC;
+		private System.Windows.Forms.ToolStripMenuItem btn_DLC_ArtistMode;
+		private System.Windows.Forms.ToolStripMenuItem btn_DLC_TagsMode;
+		private System.Windows.Forms.ToolStripComboBox tb_Tags;
 	}
 }
 
