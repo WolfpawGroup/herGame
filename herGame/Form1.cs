@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ namespace herGame
 		public bool SettingsOpen = false;
 		Timer t_Settings = new Timer() { Interval = 1 };
 		c_SqlFunctions cs = new c_SqlFunctions();
+		public bool DLC = false;
 
 		public Form1()
 		{
@@ -183,11 +185,6 @@ namespace herGame
 			tb_ArtistName.Items.AddRange(vst.ToArray());
 		}
 
-		private void btn_FindWorks_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		private void btn_Artists_Click(object sender, EventArgs e)
 		{
 			f_Artists fa = new f_Artists();
@@ -234,9 +231,9 @@ namespace herGame
 			tb_ArtistName.Visible = false;
 			tb_Tags.Visible = true;
 			lbl_ArtistName.Text = "Tags: ";
-			lbl_ArtistName.Width = 80;
 			lbl_numOfWorks.Text = "";
 			lbl_numOfWorks.Padding = new Padding(0, 0, 13, 0);
+			DLC = true;
 		}
 
 		private void btn_DLC_ArtistMode_Click(object sender, EventArgs e)
@@ -244,9 +241,62 @@ namespace herGame
 			tb_ArtistName.Visible = true;
 			tb_Tags.Visible = false;
 			lbl_ArtistName.Text = "Artist Name: ";
-			lbl_ArtistName.Width = 80;
 			lbl_numOfWorks.Text = "0";
 			lbl_numOfWorks.Padding = new Padding(0, 0, 0, 0);
+			DLC = false;
+		}
+
+		private void btn_FindWorks_Click(object sender, EventArgs e)
+		{
+			string tags = DLC ? tb_Tags.Text : tb_ArtistName.Text;
+
+			
+		}
+
+		private void btn_ImageListDelete_Click(object sender, EventArgs e)
+		{
+			
+			var imgColumns = new SQLiteColumn[] {
+				new SQLiteColumn(){ columnName = "id",				dataType = SQLiteDataType.INTEGER	},
+				new SQLiteColumn(){ columnName = "name",			dataType = SQLiteDataType.TEXT		},
+				new SQLiteColumn(){ columnName = "other_names",		dataType = SQLiteDataType.TEXT		},
+				new SQLiteColumn(){ columnName = "urls",			dataType = SQLiteDataType.TEXT		},
+				new SQLiteColumn(){ columnName = "posts",			dataType = SQLiteDataType.INTEGER	},
+				new SQLiteColumn(){ columnName = "updated",			dataType = SQLiteDataType.TEXT		},
+			};
+			List<Dictionary<string, object>> rets = new List<Dictionary<string, object>>();
+			foreach (var v in cs.select("artists", imgColumns, " 1=1 limit 100"))
+			{
+				Dictionary<string, object> r = new Dictionary<string, object>();
+				foreach (var vv in v)
+				{
+					try
+					{
+						r.Add(vv[1], vv[0]);
+					}
+					catch
+					{
+						r.Add(vv[1] + "_", vv[0]);
+					}
+				}
+
+				rets.Add(r);
+			}
+
+			foreach (var ret in rets)
+			{
+				c_Artist ci = new c_Artist() {
+					id =			Convert.ToInt32(	ret["id"]			.ToString()	),
+					name =								ret["name"]			.ToString()	,
+					urls =								ret["urls"]			.ToString()	.Split(' '),
+					posts =			Convert.ToInt32(	ret["posts"]		.ToString()	),
+					updated =							ret["updated"]		.ToString()	,
+					other_names =						ret["other_names"]	.ToString()	.Split(' ')
+				};
+
+				Console.WriteLine(string.Join(", ",ci));
+			}
+
 		}
 	}
 }

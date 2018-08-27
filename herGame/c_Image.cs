@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace herGame
 {
@@ -27,6 +28,8 @@ namespace herGame
 
 		[fieldDefinitions(partOfTable = true, columnName = "artist", dataType = SQLiteDataType.TEXT)]
 		public string artist { get; set; }
+		[fieldDefinitions(partOfTable = true, columnName = "artists", dataType = SQLiteDataType.TEXT)]
+		public string[] artists { get; set; }
 		[fieldDefinitions(partOfTable = true, columnName = "source", dataType = SQLiteDataType.TEXT)]
 		public string source { get; set; }
 		[fieldDefinitions(partOfTable = true, columnName = "sources", dataType = SQLiteDataType.TEXT)]
@@ -37,7 +40,7 @@ namespace herGame
 		[fieldDefinitions(partOfTable = true, columnName = "rating", dataType = SQLiteDataType.TEXT)]
 		public string rating { get; set; }
 		[fieldDefinitions(partOfTable = true, columnName = "tags", dataType = SQLiteDataType.TEXT)]
-		public string tags { get; set; }
+		public string[] tags { get; set; }
 		[fieldDefinitions(partOfTable = true, columnName = "description", dataType = SQLiteDataType.TEXT)]
 		public string description { get; set; }
 
@@ -64,24 +67,37 @@ namespace herGame
 		public string file_ext { get; set; }
 		[fieldDefinitions(partOfTable = true, columnName = "file_size", dataType = SQLiteDataType.INTEGER)]
 		public int file_size { get; set; }
+
+		[fieldDefinitions(partOfTable = true, columnName = "downloaded", dataType = SQLiteDataType.TEXT)]
+		public string downloaded { get; set; }
 	}
 
 	public class c_Image
 	{
-		public int id { get; set; }
-		public string md5 { get; set; }
-		public string artist_id { get; set; }
+		//Basic Data
+		public int				id			{ get; set; }
+		public string			md5			{ get; set; }
+		public string			artist_id	{ get; set; }
 
-		public c_ImageDetails details { get; set; }
-		public c_Artist artist { get; set; }
+		//Additional Data
+		public c_ImageDetails	details		{ get; set; }
+		public c_Artist			artist		{ get; set; }
 
-		public int fileSize { get; set; }
-		public Size imageSize { get; set; }
+		//Preview Data
+		public string			previewUrl	{ get; set; }
+		public Size				previewSize	{ get; set; }
+
+		//Download Data
+		public string			fileExt		{ get; set; }
+		public string			fileUrl		{ get; set; }
+		public int				fileSize	{ get; set; }
+		public Size				imageSize	{ get; set; }
 	}
 
 	/// <summary>
 	/// Type for artists containing all relevant data
 	/// </summary>
+	[Serializable()]
 	public class c_Artist
 	{
 		[fieldDefinitions(partOfTable = true, columnName = "id", dataType = SQLiteDataType.INTEGER, pimaryKey = true, autoIncrement = true)]
@@ -101,6 +117,24 @@ namespace herGame
 		public int posts { get; set; }
 		[fieldDefinitions(partOfTable = true, columnName = "updated", dataType = SQLiteDataType.TEXT)]																//Last updated
 		public string updated { get; set; }
+
+		public override string ToString()
+		{
+			var props = typeof(c_Artist).GetProperties();
+			StringBuilder sb = new StringBuilder();
+			int i = 0;
+			foreach (PropertyInfo m in typeof(c_Artist).GetProperties())
+			{
+				foreach (var v in m.GetCustomAttributes(true))
+				{
+					var vv = v as fieldDefinitions;
+
+					sb.Append($"{ vv.columnName } [ { Enum.GetName(typeof(SQLiteDataType), vv.dataType) } ] = { m.ToString() }");
+				}
+			}
+
+			return sb.ToString();
+		}
 	}
 
 	/// <summary>

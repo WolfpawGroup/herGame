@@ -36,8 +36,8 @@
 			this.btn_DLC_TagsMode = new System.Windows.Forms.ToolStripMenuItem();
 			this.lbl_ArtistName = new System.Windows.Forms.ToolStripLabel();
 			this.tb_ArtistName = new System.Windows.Forms.ToolStripComboBox();
-			this.lbl_numOfWorks = new System.Windows.Forms.ToolStripLabel();
 			this.tb_Tags = new System.Windows.Forms.ToolStripComboBox();
+			this.lbl_numOfWorks = new System.Windows.Forms.ToolStripLabel();
 			this.btn_FindWorks = new System.Windows.Forms.ToolStripButton();
 			this.btn_Settings = new System.Windows.Forms.ToolStripButton();
 			this.sep_02 = new System.Windows.Forms.ToolStripSeparator();
@@ -48,6 +48,7 @@
 			this.sep_01 = new System.Windows.Forms.ToolStripSeparator();
 			this.btn_PlayMates = new System.Windows.Forms.ToolStripDropDownButton();
 			this.cb_PlayMates = new System.Windows.Forms.ToolStripComboBox();
+			this.btn_AddPlaymate = new System.Windows.Forms.ToolStripMenuItem();
 			this.p_Options = new System.Windows.Forms.Panel();
 			this.btn_Options_SetupDownload = new System.Windows.Forms.Button();
 			this.btn_Options_Cancel = new System.Windows.Forms.Button();
@@ -104,7 +105,7 @@
 			// 
 			this.statusStrip1.Location = new System.Drawing.Point(0, 428);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(800, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(971, 22);
 			this.statusStrip1.TabIndex = 0;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -130,7 +131,7 @@
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-			this.toolStrip1.Size = new System.Drawing.Size(800, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(971, 25);
 			this.toolStrip1.TabIndex = 1;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -152,7 +153,7 @@
 			// 
 			this.btn_DLC_ArtistMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.btn_DLC_ArtistMode.Name = "btn_DLC_ArtistMode";
-			this.btn_DLC_ArtistMode.Size = new System.Drawing.Size(180, 22);
+			this.btn_DLC_ArtistMode.Size = new System.Drawing.Size(136, 22);
 			this.btn_DLC_ArtistMode.Text = "Artist Mode";
 			this.btn_DLC_ArtistMode.Click += new System.EventHandler(this.btn_DLC_ArtistMode_Click);
 			// 
@@ -160,7 +161,7 @@
 			// 
 			this.btn_DLC_TagsMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.btn_DLC_TagsMode.Name = "btn_DLC_TagsMode";
-			this.btn_DLC_TagsMode.Size = new System.Drawing.Size(180, 22);
+			this.btn_DLC_TagsMode.Size = new System.Drawing.Size(136, 22);
 			this.btn_DLC_TagsMode.Text = "Tags Mode";
 			this.btn_DLC_TagsMode.Click += new System.EventHandler(this.btn_DLC_TagsMode_Click);
 			// 
@@ -180,14 +181,8 @@
 			this.tb_ArtistName.DropDownWidth = 140;
 			this.tb_ArtistName.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
 			this.tb_ArtistName.Name = "tb_ArtistName";
-			this.tb_ArtistName.Size = new System.Drawing.Size(140, 25);
+			this.tb_ArtistName.Size = new System.Drawing.Size(200, 25);
 			this.tb_ArtistName.SelectedIndexChanged += new System.EventHandler(this.tb_ArtistName_TextUpdate);
-			// 
-			// lbl_numOfWorks
-			// 
-			this.lbl_numOfWorks.Name = "lbl_numOfWorks";
-			this.lbl_numOfWorks.Size = new System.Drawing.Size(13, 22);
-			this.lbl_numOfWorks.Text = "0";
 			// 
 			// tb_Tags
 			// 
@@ -196,8 +191,14 @@
 			this.tb_Tags.DropDownWidth = 140;
 			this.tb_Tags.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
 			this.tb_Tags.Name = "tb_Tags";
-			this.tb_Tags.Size = new System.Drawing.Size(140, 25);
+			this.tb_Tags.Size = new System.Drawing.Size(200, 25);
 			this.tb_Tags.Visible = false;
+			// 
+			// lbl_numOfWorks
+			// 
+			this.lbl_numOfWorks.Name = "lbl_numOfWorks";
+			this.lbl_numOfWorks.Size = new System.Drawing.Size(13, 22);
+			this.lbl_numOfWorks.Text = "0";
 			// 
 			// btn_FindWorks
 			// 
@@ -206,8 +207,8 @@
 			this.btn_FindWorks.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btn_FindWorks.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
 			this.btn_FindWorks.Name = "btn_FindWorks";
-			this.btn_FindWorks.Size = new System.Drawing.Size(86, 22);
-			this.btn_FindWorks.Text = "Find Works";
+			this.btn_FindWorks.Size = new System.Drawing.Size(74, 22);
+			this.btn_FindWorks.Text = "Find Pics";
 			this.btn_FindWorks.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
 			this.btn_FindWorks.Click += new System.EventHandler(this.btn_FindWorks_Click);
 			// 
@@ -280,7 +281,8 @@
 			this.btn_PlayMates.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.btn_PlayMates.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.btn_PlayMates.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cb_PlayMates});
+            this.cb_PlayMates,
+            this.btn_AddPlaymate});
 			this.btn_PlayMates.Image = ((System.Drawing.Image)(resources.GetObject("btn_PlayMates.Image")));
 			this.btn_PlayMates.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btn_PlayMates.Name = "btn_PlayMates";
@@ -291,6 +293,12 @@
 			// 
 			this.cb_PlayMates.Name = "cb_PlayMates";
 			this.cb_PlayMates.Size = new System.Drawing.Size(121, 23);
+			// 
+			// btn_AddPlaymate
+			// 
+			this.btn_AddPlaymate.Name = "btn_AddPlaymate";
+			this.btn_AddPlaymate.Size = new System.Drawing.Size(181, 22);
+			this.btn_AddPlaymate.Text = "Add Playmate";
 			// 
 			// p_Options
 			// 
@@ -305,7 +313,7 @@
 			this.p_Options.Controls.Add(this.label1);
 			this.p_Options.Controls.Add(this.rb_RandomImages);
 			this.p_Options.Controls.Add(this.rb_AllImages);
-			this.p_Options.Location = new System.Drawing.Point(560, 25);
+			this.p_Options.Location = new System.Drawing.Point(731, 25);
 			this.p_Options.Name = "p_Options";
 			this.p_Options.Size = new System.Drawing.Size(240, 0);
 			this.p_Options.TabIndex = 2;
@@ -433,8 +441,8 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-			this.splitContainer1.Size = new System.Drawing.Size(800, 403);
-			this.splitContainer1.SplitterDistance = 392;
+			this.splitContainer1.Size = new System.Drawing.Size(971, 403);
+			this.splitContainer1.SplitterDistance = 475;
 			this.splitContainer1.TabIndex = 3;
 			// 
 			// lv_Images
@@ -451,7 +459,7 @@
 			this.lv_Images.GridLines = true;
 			this.lv_Images.Location = new System.Drawing.Point(0, 25);
 			this.lv_Images.Name = "lv_Images";
-			this.lv_Images.Size = new System.Drawing.Size(392, 356);
+			this.lv_Images.Size = new System.Drawing.Size(475, 356);
 			this.lv_Images.TabIndex = 2;
 			this.lv_Images.UseCompatibleStateImageBehavior = false;
 			this.lv_Images.View = System.Windows.Forms.View.Details;
@@ -485,7 +493,7 @@
 			// 
 			this.statusStrip2.Location = new System.Drawing.Point(0, 381);
 			this.statusStrip2.Name = "statusStrip2";
-			this.statusStrip2.Size = new System.Drawing.Size(392, 22);
+			this.statusStrip2.Size = new System.Drawing.Size(475, 22);
 			this.statusStrip2.TabIndex = 1;
 			this.statusStrip2.Text = "statusStrip2";
 			// 
@@ -504,7 +512,7 @@
 			this.toolStrip2.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip2.Name = "toolStrip2";
 			this.toolStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStrip2.Size = new System.Drawing.Size(392, 25);
+			this.toolStrip2.Size = new System.Drawing.Size(475, 25);
 			this.toolStrip2.TabIndex = 0;
 			this.toolStrip2.Text = "toolStrip2";
 			this.toolStrip2.SizeChanged += new System.EventHandler(this.toolStrip2_SizeChanged);
@@ -577,7 +585,7 @@
 			// splitContainer2.Panel2
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.pb_PreviewImage);
-			this.splitContainer2.Size = new System.Drawing.Size(404, 403);
+			this.splitContainer2.Size = new System.Drawing.Size(492, 403);
 			this.splitContainer2.SplitterDistance = 173;
 			this.splitContainer2.TabIndex = 0;
 			// 
@@ -589,7 +597,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(404, 173);
+			this.tabControl1.Size = new System.Drawing.Size(492, 173);
 			this.tabControl1.TabIndex = 0;
 			// 
 			// tp_List
@@ -599,7 +607,7 @@
 			this.tp_List.Location = new System.Drawing.Point(4, 22);
 			this.tp_List.Name = "tp_List";
 			this.tp_List.Padding = new System.Windows.Forms.Padding(3);
-			this.tp_List.Size = new System.Drawing.Size(396, 147);
+			this.tp_List.Size = new System.Drawing.Size(484, 147);
 			this.tp_List.TabIndex = 0;
 			this.tp_List.Text = "List of Images";
 			this.tp_List.UseVisualStyleBackColor = true;
@@ -613,7 +621,7 @@
 			this.lv_ImageList.GridLines = true;
 			this.lv_ImageList.Location = new System.Drawing.Point(3, 3);
 			this.lv_ImageList.Name = "lv_ImageList";
-			this.lv_ImageList.Size = new System.Drawing.Size(343, 141);
+			this.lv_ImageList.Size = new System.Drawing.Size(431, 141);
 			this.lv_ImageList.TabIndex = 1;
 			this.lv_ImageList.UseCompatibleStateImageBehavior = false;
 			this.lv_ImageList.View = System.Windows.Forms.View.Details;
@@ -626,20 +634,20 @@
 			// btn_ImageListDelete
 			// 
 			this.btn_ImageListDelete.Dock = System.Windows.Forms.DockStyle.Right;
-			this.btn_ImageListDelete.Enabled = false;
-			this.btn_ImageListDelete.Location = new System.Drawing.Point(346, 3);
+			this.btn_ImageListDelete.Location = new System.Drawing.Point(434, 3);
 			this.btn_ImageListDelete.Name = "btn_ImageListDelete";
 			this.btn_ImageListDelete.Size = new System.Drawing.Size(47, 141);
 			this.btn_ImageListDelete.TabIndex = 0;
 			this.btn_ImageListDelete.Text = "Delete";
 			this.btn_ImageListDelete.UseVisualStyleBackColor = true;
+			this.btn_ImageListDelete.Click += new System.EventHandler(this.btn_ImageListDelete_Click);
 			// 
 			// tp_Output
 			// 
 			this.tp_Output.Location = new System.Drawing.Point(4, 22);
 			this.tp_Output.Name = "tp_Output";
 			this.tp_Output.Padding = new System.Windows.Forms.Padding(3);
-			this.tp_Output.Size = new System.Drawing.Size(396, 147);
+			this.tp_Output.Size = new System.Drawing.Size(484, 147);
 			this.tp_Output.TabIndex = 1;
 			this.tp_Output.Text = "Output";
 			this.tp_Output.UseVisualStyleBackColor = true;
@@ -650,7 +658,7 @@
 			this.pb_PreviewImage.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pb_PreviewImage.Location = new System.Drawing.Point(0, 0);
 			this.pb_PreviewImage.Name = "pb_PreviewImage";
-			this.pb_PreviewImage.Size = new System.Drawing.Size(404, 226);
+			this.pb_PreviewImage.Size = new System.Drawing.Size(492, 226);
 			this.pb_PreviewImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pb_PreviewImage.TabIndex = 0;
 			this.pb_PreviewImage.TabStop = false;
@@ -659,7 +667,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.ClientSize = new System.Drawing.Size(971, 450);
 			this.Controls.Add(this.p_Options);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.toolStrip1);
@@ -747,6 +755,7 @@
 		private System.Windows.Forms.ToolStripMenuItem btn_DLC_ArtistMode;
 		private System.Windows.Forms.ToolStripMenuItem btn_DLC_TagsMode;
 		private System.Windows.Forms.ToolStripComboBox tb_Tags;
+		private System.Windows.Forms.ToolStripMenuItem btn_AddPlaymate;
 	}
 }
 
