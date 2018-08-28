@@ -203,7 +203,7 @@
 			// btn_FindWorks
 			// 
 			this.btn_FindWorks.BackColor = System.Drawing.Color.Gainsboro;
-			this.btn_FindWorks.Image = global::herGame.Properties.Resources.start;
+			this.btn_FindWorks.Image = ((System.Drawing.Image)(resources.GetObject("btn_FindWorks.Image")));
 			this.btn_FindWorks.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btn_FindWorks.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
 			this.btn_FindWorks.Name = "btn_FindWorks";
@@ -216,7 +216,7 @@
 			// 
 			this.btn_Settings.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.btn_Settings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.btn_Settings.Image = global::herGame.Properties.Resources.Cog_16X16_Gray;
+			this.btn_Settings.Image = ((System.Drawing.Image)(resources.GetObject("btn_Settings.Image")));
 			this.btn_Settings.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btn_Settings.Name = "btn_Settings";
 			this.btn_Settings.Size = new System.Drawing.Size(23, 22);
@@ -463,6 +463,7 @@
 			this.lv_Images.TabIndex = 2;
 			this.lv_Images.UseCompatibleStateImageBehavior = false;
 			this.lv_Images.View = System.Windows.Forms.View.Details;
+			this.lv_Images.SelectedIndexChanged += new System.EventHandler(this.lv_Images_SelectedIndexChanged);
 			// 
 			// ch_ImageListIndex
 			// 

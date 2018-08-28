@@ -14,10 +14,14 @@ namespace herGame
 {
 	public partial class Form1 : Form
 	{
-		public bool SettingsOpen = false;
-		Timer t_Settings = new Timer() { Interval = 1 };
-		c_SqlFunctions cs = new c_SqlFunctions();
-		public bool DLC = false;
+		public Timer			t_Settings =	new Timer() { Interval = 1 };
+		public c_SqlFunctions	cs =			new c_SqlFunctions();
+		public List<c_Image>	images =		new List<c_Image>();
+		public bool				SettingsOpen =	false;
+		public bool				DLC =			false;
+		public int				limit =			100;
+		public int				page =			0;
+		public int				numOfPages =	0;
 
 		public Form1()
 		{
@@ -249,54 +253,54 @@ namespace herGame
 		private void btn_FindWorks_Click(object sender, EventArgs e)
 		{
 			string tags = DLC ? tb_Tags.Text : tb_ArtistName.Text;
+			c_ImageDataHandler cid = new c_ImageDataHandler(cs);
+			images = cid.donloadImageData(tags);
 
+			numOfPages = (images.Count / limit) + (images.Count % limit == 0 ? 0 : 1);
+
+			loadImagesIntoListView();
 			
+		}
+
+		public void loadImagesIntoListView()
+		{
+			lbl_Pages_OfNumber.Text =	numOfPages.ToString();
+			tb_Pages_Number.Text =		(page + 1).ToString().PadLeft(numOfPages.ToString().Length, '0');
+
+			limit = limit > images.Count ? images.Count : limit;
+			var arr = new c_Image[limit];
+			images.CopyTo((limit * page), arr, 0, limit);
+			int i = 0;
+			foreach(var v in arr)
+			{
+				ListViewItem lvi = new ListViewItem();
+				lvi.Text = ++i + "";
+				lvi.SubItems.AddRange(new ListViewItem.ListViewSubItem[] {
+					
+					new ListViewItem.ListViewSubItem(){ Text = v.md5 },
+					new ListViewItem.ListViewSubItem(){ Text = v.imageSize.Width + " x " + v.imageSize.Height },
+					new ListViewItem.ListViewSubItem(){ Text = v.details.score + "" },
+					new ListViewItem.ListViewSubItem(){ Text = v.shared ? "" : "" }
+				});
+
+				lvi.Tag = v;
+
+				lv_Images.Items.Add(lvi);
+			}
 		}
 
 		private void btn_ImageListDelete_Click(object sender, EventArgs e)
 		{
 			
-			var imgColumns = new SQLiteColumn[] {
-				new SQLiteColumn(){ columnName = "id",				dataType = SQLiteDataType.INTEGER	},
-				new SQLiteColumn(){ columnName = "name",			dataType = SQLiteDataType.TEXT		},
-				new SQLiteColumn(){ columnName = "other_names",		dataType = SQLiteDataType.TEXT		},
-				new SQLiteColumn(){ columnName = "urls",			dataType = SQLiteDataType.TEXT		},
-				new SQLiteColumn(){ columnName = "posts",			dataType = SQLiteDataType.INTEGER	},
-				new SQLiteColumn(){ columnName = "updated",			dataType = SQLiteDataType.TEXT		},
-			};
-			List<Dictionary<string, object>> rets = new List<Dictionary<string, object>>();
-			foreach (var v in cs.select("artists", imgColumns, " 1=1 limit 100"))
+
+		}
+
+		private void lv_Images_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if(lv_Images.FocusedItem != null)
 			{
-				Dictionary<string, object> r = new Dictionary<string, object>();
-				foreach (var vv in v)
-				{
-					try
-					{
-						r.Add(vv[1], vv[0]);
-					}
-					catch
-					{
-						r.Add(vv[1] + "_", vv[0]);
-					}
-				}
-
-				rets.Add(r);
+				//TODO:: Check if preview image exists in db else download and save it before showing it
 			}
-
-			foreach (var ret in rets)
-			{
-				c_Artist ci = new c_Artist() {
-					id =			Convert.ToInt32(	ret["id"]			.ToString()	),
-					name =								ret["name"]			.ToString()	,
-					urls =								ret["urls"]			.ToString()	.Split(' '),
-					posts =			Convert.ToInt32(	ret["posts"]		.ToString()	),
-					updated =							ret["updated"]		.ToString()	,
-					other_names =						ret["other_names"]	.ToString()	.Split(' ')
-				};
-
-				Console.WriteLine(string.Join(", ",ci));
-			}
-
 		}
 	}
 }

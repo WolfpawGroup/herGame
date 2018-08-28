@@ -206,24 +206,27 @@ namespace herGame
 
 			foreach (var v in values)
 			{
-				columns += v[0];
-
-				template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
-
-				if (v[0] == "id") { id = string.Format(template, v[2]); }
-
-				vals += string.Format(template, v[2].Replace("'","''"));
-				
-				if (!values.Last().Equals(v))
+				if (v[2] != null)
 				{
-					columns += ", ";
-					vals += ", ";
-				}
-				else
-				{
-					columns += ")\r\n VALUES\r\n\t ";
-					vals += ")";
-					if (!runInsert) { vals += ",\r\n"; }
+					columns += v[0];
+
+					template = ((v[1] == "true" || v[1] == "1") ? "'{0}'" : "{0}");
+
+					if (v[0] == "id") { id = string.Format(template, v[2]); }
+
+					vals += string.Format(template, v[2].Replace("'", "''"));
+
+					if (!values.Last().Equals(v))
+					{
+						columns += ", ";
+						vals += ", ";
+					}
+					else
+					{
+						columns += ")\r\n VALUES\r\n\t ";
+						vals += ")";
+						if (!runInsert) { vals += ",\r\n"; }
+					}
 				}
 			}
 			if (first)
@@ -410,6 +413,30 @@ namespace herGame
 			if (exist == null || !(bool)exist) { return null; }
 
 			string selectCols = (cols.Length < 2 ? (cols.Length == 0 ? " * " : cols[0]) : string.Join(", \r\n\t", cols));
+
+			StringBuilder selectBuilder = new StringBuilder(string.Format("SELECT \r\n\t {0} \r\n FROM \r\n\t {1} \r\n ", selectCols, tableName));
+
+			if (where.Length > 0)
+			{
+				if (where.Trim().ToLower().StartsWith("where"))
+				{
+					where = " " + where.Substring(where.ToLower().IndexOf("where") + 5);
+				}
+
+				selectBuilder.AppendFormat(" WHERE\r\n\t {0} ", where);
+			}
+
+			SQLiteCommand sqlk = new SQLiteCommand(selectBuilder.ToString(), sqlc);
+			return sqlk;
+		}
+
+		public SQLiteCommand GetDbContent(string tableName, SQLiteColumn[] cols, string where)
+		{
+			if (!checkDbConnected()) { Console.WriteLine("ERROR:SQLC → SQL Connection NULL or not open"); return null; }
+			object exist = checkTableExists(tableName);
+			if (exist == null || !(bool)exist) { return null; }
+
+			string selectCols =  string.Join(", \r\n\t", cols.Select(x=>x.columnName));
 
 			StringBuilder selectBuilder = new StringBuilder(string.Format("SELECT \r\n\t {0} \r\n FROM \r\n\t {1} \r\n ", selectCols, tableName));
 

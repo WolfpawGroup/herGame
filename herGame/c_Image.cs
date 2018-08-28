@@ -77,7 +77,7 @@ namespace herGame
 		//Basic Data
 		public int				id			{ get; set; }
 		public string			md5			{ get; set; }
-		public string			artist_id	{ get; set; }
+		public int				artist_id	{ get; set; }
 
 		//Additional Data
 		public c_ImageDetails	details		{ get; set; }
@@ -86,6 +86,7 @@ namespace herGame
 		//Preview Data
 		public string			previewUrl	{ get; set; }
 		public Size				previewSize	{ get; set; }
+		public bool				shared		{ get; set; }
 
 		//Download Data
 		public string			fileExt		{ get; set; }
@@ -118,23 +119,6 @@ namespace herGame
 		[fieldDefinitions(partOfTable = true, columnName = "updated", dataType = SQLiteDataType.TEXT)]																//Last updated
 		public string updated { get; set; }
 
-		public override string ToString()
-		{
-			var props = typeof(c_Artist).GetProperties();
-			StringBuilder sb = new StringBuilder();
-			int i = 0;
-			foreach (PropertyInfo m in typeof(c_Artist).GetProperties())
-			{
-				foreach (var v in m.GetCustomAttributes(true))
-				{
-					var vv = v as fieldDefinitions;
-
-					sb.Append($"{ vv.columnName } [ { Enum.GetName(typeof(SQLiteDataType), vv.dataType) } ] = { m.ToString() }");
-				}
-			}
-
-			return sb.ToString();
-		}
 	}
 
 	/// <summary>

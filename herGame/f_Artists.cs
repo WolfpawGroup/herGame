@@ -107,11 +107,11 @@ namespace herGame
 				{
 					if (artists.Last().Equals(v)) { run = true; }
 					cs.buildInsert("artists", new string[][] {
-						new string[]{ "id",             "false",    v.id.ToString()                     },
-						new string[]{ "name",           "true",     v.name.ToString()                   },
-						new string[]{ "other_names",    "true",     String.Join(", ", v.other_names)    },
-						new string[]{ "urls",           "true",     String.Join(" ", v.urls)            },
-						new string[]{ "updated",        "true",     v.updated.ToString()                }
+						new string[]{ "id",             "false",    v.id.ToString()						},
+						new string[]{ "name",           "true",     v.name.ToString()					},
+						new string[]{ "other_names",    "true",     String.Join("×", v.other_names)		},
+						new string[]{ "urls",           "true",     String.Join("×", v.urls)			},
+						new string[]{ "updated",        "true",     v.updated.ToString()				}
 					}, run);
 					i++;
 				}

@@ -85,7 +85,7 @@ namespace herGame
 						var doc = c_Functions.parseXML(res);
 						if (doc.GetElementsByTagName("post").Count > 0)
 						{
-							foreach (XmlElement x in doc.GetElementsByTagName("artist"))
+							foreach (XmlElement x in doc.GetElementsByTagName("post"))
 							{
 								try
 								{
@@ -96,10 +96,10 @@ namespace herGame
 
 										parent_id =			(x.GetElementsByTagName					("parent_id")		[0].InnerText == "" ? -1 : Convert.ToInt32(x.GetElementsByTagName("parent_id")[0].InnerText)),
 										has_children =		(x.GetElementsByTagName					("has_children")	[0].InnerText == "false" ? false : true),
-										children =			(x.GetElementsByTagName					("has_children")	[0].InnerText == "false" ? null : x.GetElementsByTagName("children")[0].InnerText.Split(',')),
+										children =			(x.GetElementsByTagName					("children")		[0].InnerText == "" ? null : x.GetElementsByTagName("children")[0].InnerText.Split(',')),
 
 										artist =			x.GetElementsByTagName					("artist")			[0].FirstChild.InnerText,
-										artists =			(x.GetElementsByTagName					("artist")			[0].ChildNodes.Count == 1 ? null : ToArray(x.GetElementsByTagName("artist")[0].ChildNodes)),
+										artists =			(x.GetElementsByTagName					("artists")			[0]					== null ? null : ToArray(x.GetElementsByTagName("artist")[0].ChildNodes)),
 										source =			x.GetElementsByTagName					("source")			[0].InnerText,
 										sources =			(x.GetElementsByTagName					("sources")			[0].ChildNodes.Count == 0 ? null : ToArray(x.GetElementsByTagName("sources")[0].ChildNodes)),
 
@@ -124,8 +124,9 @@ namespace herGame
 										downloaded =		DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString()
 									});
 								}
-								catch
+								catch(Exception ex)
 								{
+									Console.Error.WriteLine(ex);
 									continue;
 								}
 							}
@@ -233,11 +234,11 @@ namespace herGame
 			var d_Species	= c_Functions.parseXML(GetPageData(string.Format(url, "species"		))		);
 
 			Dictionary<SQLiteColumn, string> related = new Dictionary<SQLiteColumn, string>() {
-				{ new SQLiteColumn() { columnName="related_General",    dataType = SQLiteDataType.TEXT }, string.Join(" ",	getArray(  d_General	))},
-				{ new SQLiteColumn() { columnName="related_Artist",     dataType = SQLiteDataType.TEXT }, string.Join(" ",	getArray(  d_Artist		))},
-				{ new SQLiteColumn() { columnName="related_Copyright",  dataType = SQLiteDataType.TEXT }, string.Join(" ",	getArray(  d_Copyright	))},
-				{ new SQLiteColumn() { columnName="related_Character",  dataType = SQLiteDataType.TEXT }, string.Join(" ",	getArray(  d_Character	))},
-				{ new SQLiteColumn() { columnName="related_Species",    dataType = SQLiteDataType.TEXT }, string.Join(" ",	getArray(  d_Species	))}
+				{ new SQLiteColumn() { columnName="related_General",    dataType = SQLiteDataType.TEXT }, string.Join("×",	getArray(  d_General	))},
+				{ new SQLiteColumn() { columnName="related_Artist",     dataType = SQLiteDataType.TEXT }, string.Join("×",	getArray(  d_Artist		))},
+				{ new SQLiteColumn() { columnName="related_Copyright",  dataType = SQLiteDataType.TEXT }, string.Join("×",	getArray(  d_Copyright	))},
+				{ new SQLiteColumn() { columnName="related_Character",  dataType = SQLiteDataType.TEXT }, string.Join("×",	getArray(  d_Character	))},
+				{ new SQLiteColumn() { columnName="related_Species",    dataType = SQLiteDataType.TEXT }, string.Join("×",	getArray(  d_Species	))}
 			};
 
 			cs.update("tags", related, " name='" + name + "' ");
