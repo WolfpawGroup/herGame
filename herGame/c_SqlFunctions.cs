@@ -234,16 +234,7 @@ namespace herGame
 			{
 				insertBuilderBuilder.AppendFormat(" {0} ", vals);
 			}
-			/*
-			try
-			{
-				new SQLiteCommand(insertBuilderBuilder.ToString().Trim(new char[]{ ',','\r','\n', ' ','	' }), sqlc).VerifyOnly();
-			}
-			catch(Exception ex)
-			{
-				MessageBox.Show(ex.ToString());
-			}
-			*/
+			
 			if (runInsert)
 			{
 				runNonQuery(insertBuilderBuilder.ToString());

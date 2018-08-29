@@ -71,12 +71,13 @@ namespace herGame
 		public void loadDataToTable(int limit, int offset)
 		{
 			dgv_Artists.Rows.Clear();
-
-			var v = cs.GetDbContent("artists", new string[] { "id", "name", "other_names", "urls", "posts", "updated" }, " 1=1\r\n\tlimit " + (offset * limit) + ", " + limit);
-			var r = v.ExecuteReader();
-			while (r.Read())
+			try
 			{
-				dgv_Artists.Rows.Add(new object[]{
+				var v = cs.GetDbContent("artists", new string[] { "id", "name", "other_names", "urls", "posts", "updated" }, " 1=1\r\n\tlimit " + (offset * limit) + ", " + limit);
+				var r = v.ExecuteReader();
+				while (r.Read())
+				{
+					dgv_Artists.Rows.Add(new object[]{
 					r.GetValue(0),
 					r.GetValue(1).ToString(),
 					r.GetValue(2).ToString(),
@@ -84,10 +85,13 @@ namespace herGame
 					r.GetValue(4),
 					r.GetValue(5).ToString()
 				});
-			}
+				}
 
-			btn_First.Enabled = btn_Previous.Enabled = page == 0 ? false : true;
-			btn_Last.Enabled = btn_Next.Enabled = page == maxPage ? false : true;
+				btn_First.Enabled = btn_Previous.Enabled = page == 0 ? false : true;
+				btn_Last.Enabled = btn_Next.Enabled = page == maxPage ? false : true;
+
+			}
+			catch { }
 			
 			tb_PageNum.Text = (page + 1) + "";
 		}
