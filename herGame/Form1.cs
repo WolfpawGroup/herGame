@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,9 +14,14 @@ namespace herGame
 {
 	public partial class Form1 : Form
 	{
-		public bool SettingsOpen = false;
-		Timer t_Settings = new Timer() { Interval = 1 };
-		c_SqlFunctions cs = new c_SqlFunctions();
+		public Timer			t_Settings =	new Timer() { Interval = 1 };
+		public c_SqlFunctions	cs =			new c_SqlFunctions();
+		public List<c_Image>	images =		new List<c_Image>();
+		public bool				SettingsOpen =	false;
+		public bool				DLC =			false;
+		public int				limit =			100;
+		public int				page =			0;
+		public int				numOfPages =	0;
 
 		public Form1()
 		{
@@ -183,11 +189,6 @@ namespace herGame
 			tb_ArtistName.Items.AddRange(vst.ToArray());
 		}
 
-		private void btn_FindWorks_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		private void btn_Artists_Click(object sender, EventArgs e)
 		{
 			f_Artists fa = new f_Artists();
@@ -234,9 +235,9 @@ namespace herGame
 			tb_ArtistName.Visible = false;
 			tb_Tags.Visible = true;
 			lbl_ArtistName.Text = "Tags: ";
-			lbl_ArtistName.Width = 80;
 			lbl_numOfWorks.Text = "";
 			lbl_numOfWorks.Padding = new Padding(0, 0, 13, 0);
+			DLC = true;
 		}
 
 		private void btn_DLC_ArtistMode_Click(object sender, EventArgs e)
@@ -244,9 +245,62 @@ namespace herGame
 			tb_ArtistName.Visible = true;
 			tb_Tags.Visible = false;
 			lbl_ArtistName.Text = "Artist Name: ";
-			lbl_ArtistName.Width = 80;
 			lbl_numOfWorks.Text = "0";
 			lbl_numOfWorks.Padding = new Padding(0, 0, 0, 0);
+			DLC = false;
+		}
+
+		private void btn_FindWorks_Click(object sender, EventArgs e)
+		{
+			string tags = DLC ? tb_Tags.Text : tb_ArtistName.Text;
+			c_ImageDataHandler cid = new c_ImageDataHandler(cs);
+			images = cid.donloadImageData(tags);
+
+			numOfPages = (images.Count / limit) + (images.Count % limit == 0 ? 0 : 1);
+
+			loadImagesIntoListView();
+			
+		}
+
+		public void loadImagesIntoListView()
+		{
+			lbl_Pages_OfNumber.Text =	numOfPages.ToString();
+			tb_Pages_Number.Text =		(page + 1).ToString().PadLeft(numOfPages.ToString().Length, '0');
+
+			limit = limit > images.Count ? images.Count : limit;
+			var arr = new c_Image[limit];
+			images.CopyTo((limit * page), arr, 0, limit);
+			int i = 0;
+			foreach(var v in arr)
+			{
+				ListViewItem lvi = new ListViewItem();
+				lvi.Text = ++i + "";
+				lvi.SubItems.AddRange(new ListViewItem.ListViewSubItem[] {
+					
+					new ListViewItem.ListViewSubItem(){ Text = v.md5 },
+					new ListViewItem.ListViewSubItem(){ Text = v.imageSize.Width + " x " + v.imageSize.Height },
+					new ListViewItem.ListViewSubItem(){ Text = v.details.score + "" },
+					new ListViewItem.ListViewSubItem(){ Text = v.shared ? "" : "" }
+				});
+
+				lvi.Tag = v;
+
+				lv_Images.Items.Add(lvi);
+			}
+		}
+
+		private void btn_ImageListDelete_Click(object sender, EventArgs e)
+		{
+			
+
+		}
+
+		private void lv_Images_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if(lv_Images.FocusedItem != null)
+			{
+				//TODO:: Check if preview image exists in db else download and save it before showing it
+			}
 		}
 	}
 }
