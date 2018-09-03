@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			herGame.attachment attachment1 = new herGame.attachment();
 			this.dgv_Artists = new System.Windows.Forms.DataGridView();
 			this.artist_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.artist_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -39,16 +40,21 @@
 			this.btn_UpdateArtists = new System.Windows.Forms.Button();
 			this.btn_LoadFromDB = new System.Windows.Forms.Button();
 			this.btn_Close = new System.Windows.Forms.Button();
-			this.btn_EmptyDB = new System.Windows.Forms.Button();
-			this.btn_Previous = new System.Windows.Forms.Button();
-			this.btn_First = new System.Windows.Forms.Button();
-			this.btn_Next = new System.Windows.Forms.Button();
-			this.btn_Last = new System.Windows.Forms.Button();
+			this.btn_EmptyArtistsDB_Open = new System.Windows.Forms.Button();
 			this.tb_PageNum = new System.Windows.Forms.TextBox();
 			this.btn_GoToPage = new System.Windows.Forms.Button();
 			this.lbl_0 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.btn_Next = new System.Windows.Forms.Button();
+			this.btn_Last = new System.Windows.Forms.Button();
+			this.btn_Previous = new System.Windows.Forms.Button();
+			this.btn_First = new System.Windows.Forms.Button();
+			this.p_EmptyArtistsDB = new herGame.uc_OpenablePanel();
+			this.btn_EmptyArtistsDB = new System.Windows.Forms.Button();
+			this.cb_YesImSure = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.dgv_Artists)).BeginInit();
+			this.p_EmptyArtistsDB.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// dgv_Artists
@@ -155,74 +161,16 @@
 			this.btn_Close.UseVisualStyleBackColor = true;
 			this.btn_Close.Click += new System.EventHandler(this.btn_Close_Click);
 			// 
-			// btn_EmptyDB
+			// btn_EmptyArtistsDB_Open
 			// 
-			this.btn_EmptyDB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_EmptyDB.Location = new System.Drawing.Point(766, 136);
-			this.btn_EmptyDB.Name = "btn_EmptyDB";
-			this.btn_EmptyDB.Size = new System.Drawing.Size(129, 35);
-			this.btn_EmptyDB.TabIndex = 4;
-			this.btn_EmptyDB.Text = "Empty Artist Database";
-			this.btn_EmptyDB.UseVisualStyleBackColor = true;
-			this.btn_EmptyDB.Click += new System.EventHandler(this.btn_EmptyDB_Click);
-			// 
-			// btn_Previous
-			// 
-			this.btn_Previous.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.btn_Previous.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btn_Previous.Image = global::herGame.Properties.Resources.left;
-			this.btn_Previous.Location = new System.Drawing.Point(82, 497);
-			this.btn_Previous.Name = "btn_Previous";
-			this.btn_Previous.Size = new System.Drawing.Size(50, 33);
-			this.btn_Previous.TabIndex = 6;
-			this.btn_Previous.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.btn_Previous.UseVisualStyleBackColor = true;
-			this.btn_Previous.Click += new System.EventHandler(this.btn_Previous_Click);
-			// 
-			// btn_First
-			// 
-			this.btn_First.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.btn_First.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btn_First.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.btn_First.Image = global::herGame.Properties.Resources.left_full;
-			this.btn_First.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.btn_First.Location = new System.Drawing.Point(0, 497);
-			this.btn_First.Name = "btn_First";
-			this.btn_First.Size = new System.Drawing.Size(83, 33);
-			this.btn_First.TabIndex = 5;
-			this.btn_First.Text = "First";
-			this.btn_First.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.btn_First.UseVisualStyleBackColor = true;
-			this.btn_First.Click += new System.EventHandler(this.btn_First_Click);
-			// 
-			// btn_Next
-			// 
-			this.btn_Next.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_Next.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btn_Next.Image = global::herGame.Properties.Resources.right;
-			this.btn_Next.Location = new System.Drawing.Point(640, 497);
-			this.btn_Next.Name = "btn_Next";
-			this.btn_Next.Size = new System.Drawing.Size(50, 33);
-			this.btn_Next.TabIndex = 8;
-			this.btn_Next.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.btn_Next.UseVisualStyleBackColor = true;
-			this.btn_Next.Click += new System.EventHandler(this.btn_Next_Click);
-			// 
-			// btn_Last
-			// 
-			this.btn_Last.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btn_Last.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btn_Last.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.btn_Last.Image = global::herGame.Properties.Resources.right_full;
-			this.btn_Last.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.btn_Last.Location = new System.Drawing.Point(689, 497);
-			this.btn_Last.Name = "btn_Last";
-			this.btn_Last.Size = new System.Drawing.Size(83, 33);
-			this.btn_Last.TabIndex = 7;
-			this.btn_Last.Text = "Last";
-			this.btn_Last.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.btn_Last.UseVisualStyleBackColor = true;
-			this.btn_Last.Click += new System.EventHandler(this.btn_Last_Click);
+			this.btn_EmptyArtistsDB_Open.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btn_EmptyArtistsDB_Open.Location = new System.Drawing.Point(766, 398);
+			this.btn_EmptyArtistsDB_Open.Name = "btn_EmptyArtistsDB_Open";
+			this.btn_EmptyArtistsDB_Open.Size = new System.Drawing.Size(129, 35);
+			this.btn_EmptyArtistsDB_Open.TabIndex = 4;
+			this.btn_EmptyArtistsDB_Open.Text = "Empty Artist Database";
+			this.btn_EmptyArtistsDB_Open.UseVisualStyleBackColor = true;
+			this.btn_EmptyArtistsDB_Open.Click += new System.EventHandler(this.btn_EmptyDB_Click);
 			// 
 			// tb_PageNum
 			// 
@@ -271,18 +219,122 @@
 			this.label2.AutoSize = true;
 			this.label2.Font = new System.Drawing.Font("Courier New", 12F);
 			this.label2.ForeColor = System.Drawing.Color.Gray;
-			this.label2.Location = new System.Drawing.Point(796, 119);
+			this.label2.Location = new System.Drawing.Point(796, 381);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(68, 18);
 			this.label2.TabIndex = 12;
 			this.label2.Text = "Delete";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
+			// panel1
+			// 
+			this.panel1.BackColor = System.Drawing.Color.Gainsboro;
+			this.panel1.Location = new System.Drawing.Point(771, 102);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(124, 67);
+			this.panel1.TabIndex = 14;
+			// 
+			// btn_Next
+			// 
+			this.btn_Next.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btn_Next.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btn_Next.Image = global::herGame.Properties.Resources.right;
+			this.btn_Next.Location = new System.Drawing.Point(640, 497);
+			this.btn_Next.Name = "btn_Next";
+			this.btn_Next.Size = new System.Drawing.Size(50, 33);
+			this.btn_Next.TabIndex = 8;
+			this.btn_Next.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.btn_Next.UseVisualStyleBackColor = true;
+			this.btn_Next.Click += new System.EventHandler(this.btn_Next_Click);
+			// 
+			// btn_Last
+			// 
+			this.btn_Last.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btn_Last.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btn_Last.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.btn_Last.Image = global::herGame.Properties.Resources.right_full;
+			this.btn_Last.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.btn_Last.Location = new System.Drawing.Point(689, 497);
+			this.btn_Last.Name = "btn_Last";
+			this.btn_Last.Size = new System.Drawing.Size(83, 33);
+			this.btn_Last.TabIndex = 7;
+			this.btn_Last.Text = "Last";
+			this.btn_Last.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.btn_Last.UseVisualStyleBackColor = true;
+			this.btn_Last.Click += new System.EventHandler(this.btn_Last_Click);
+			// 
+			// btn_Previous
+			// 
+			this.btn_Previous.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btn_Previous.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btn_Previous.Image = global::herGame.Properties.Resources.left;
+			this.btn_Previous.Location = new System.Drawing.Point(82, 497);
+			this.btn_Previous.Name = "btn_Previous";
+			this.btn_Previous.Size = new System.Drawing.Size(50, 33);
+			this.btn_Previous.TabIndex = 6;
+			this.btn_Previous.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.btn_Previous.UseVisualStyleBackColor = true;
+			this.btn_Previous.Click += new System.EventHandler(this.btn_Previous_Click);
+			// 
+			// btn_First
+			// 
+			this.btn_First.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btn_First.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btn_First.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.btn_First.Image = global::herGame.Properties.Resources.left_full;
+			this.btn_First.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.btn_First.Location = new System.Drawing.Point(0, 497);
+			this.btn_First.Name = "btn_First";
+			this.btn_First.Size = new System.Drawing.Size(83, 33);
+			this.btn_First.TabIndex = 5;
+			this.btn_First.Text = "First";
+			this.btn_First.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.btn_First.UseVisualStyleBackColor = true;
+			this.btn_First.Click += new System.EventHandler(this.btn_First_Click);
+			// 
+			// p_EmptyArtistsDB
+			// 
+			this.p_EmptyArtistsDB.AttachedControl = this.btn_EmptyArtistsDB_Open;
+			this.p_EmptyArtistsDB.BackColor = System.Drawing.Color.Gainsboro;
+			attachment1.attachPoint = herGame.attachmentPoint.TopAttach;
+			attachment1.slideMode = herGame.slideDirection.SlideUp_AnchorTop;
+			this.p_EmptyArtistsDB.ControlAttachment = attachment1;
+			this.p_EmptyArtistsDB.Controls.Add(this.btn_EmptyArtistsDB);
+			this.p_EmptyArtistsDB.Controls.Add(this.cb_YesImSure);
+			this.p_EmptyArtistsDB.Location = new System.Drawing.Point(771, 431);
+			this.p_EmptyArtistsDB.Name = "p_EmptyArtistsDB";
+			this.p_EmptyArtistsDB.OpenCloseInterval = 10;
+			this.p_EmptyArtistsDB.PanelHeight = 50;
+			this.p_EmptyArtistsDB.PanelWidth = 100;
+			this.p_EmptyArtistsDB.Size = new System.Drawing.Size(124, 67);
+			this.p_EmptyArtistsDB.StartClosed = false;
+			this.p_EmptyArtistsDB.TabIndex = 13;
+			// 
+			// btn_EmptyArtistsDB
+			// 
+			this.btn_EmptyArtistsDB.Location = new System.Drawing.Point(7, 26);
+			this.btn_EmptyArtistsDB.Name = "btn_EmptyArtistsDB";
+			this.btn_EmptyArtistsDB.Size = new System.Drawing.Size(107, 31);
+			this.btn_EmptyArtistsDB.TabIndex = 1;
+			this.btn_EmptyArtistsDB.Text = "Empty Database!";
+			this.btn_EmptyArtistsDB.UseVisualStyleBackColor = true;
+			// 
+			// cb_YesImSure
+			// 
+			this.cb_YesImSure.AutoSize = true;
+			this.cb_YesImSure.Location = new System.Drawing.Point(7, 3);
+			this.cb_YesImSure.Name = "cb_YesImSure";
+			this.cb_YesImSure.Size = new System.Drawing.Size(91, 17);
+			this.cb_YesImSure.TabIndex = 0;
+			this.cb_YesImSure.Text = "Yes, I\'m Sure!";
+			this.cb_YesImSure.UseVisualStyleBackColor = true;
+			// 
 			// f_Artists
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(891, 528);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.lbl_0);
 			this.Controls.Add(this.btn_GoToPage);
@@ -292,13 +344,16 @@
 			this.Controls.Add(this.btn_Previous);
 			this.Controls.Add(this.btn_First);
 			this.Controls.Add(this.dgv_Artists);
-			this.Controls.Add(this.btn_EmptyDB);
+			this.Controls.Add(this.btn_EmptyArtistsDB_Open);
 			this.Controls.Add(this.btn_LoadFromDB);
 			this.Controls.Add(this.btn_UpdateArtists);
 			this.Controls.Add(this.btn_Close);
+			this.Controls.Add(this.p_EmptyArtistsDB);
 			this.Name = "f_Artists";
 			this.Text = "Artists";
 			((System.ComponentModel.ISupportInitialize)(this.dgv_Artists)).EndInit();
+			this.p_EmptyArtistsDB.ResumeLayout(false);
+			this.p_EmptyArtistsDB.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -316,7 +371,7 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn artist_urls;
 		private System.Windows.Forms.DataGridViewTextBoxColumn artist_posts;
 		private System.Windows.Forms.DataGridViewTextBoxColumn artist_updated;
-		private System.Windows.Forms.Button btn_EmptyDB;
+		private System.Windows.Forms.Button btn_EmptyArtistsDB_Open;
 		private System.Windows.Forms.Button btn_First;
 		private System.Windows.Forms.Button btn_Previous;
 		private System.Windows.Forms.Button btn_Next;
@@ -325,5 +380,9 @@
 		private System.Windows.Forms.Button btn_GoToPage;
 		private System.Windows.Forms.Label lbl_0;
 		private System.Windows.Forms.Label label2;
+		private uc_OpenablePanel p_EmptyArtistsDB;
+		private System.Windows.Forms.Button btn_EmptyArtistsDB;
+		private System.Windows.Forms.CheckBox cb_YesImSure;
+		private System.Windows.Forms.Panel panel1;
 	}
 }

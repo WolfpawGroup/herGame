@@ -26,6 +26,8 @@ namespace herGame
 
 		private void F_Artists_Load(object sender, EventArgs e)
 		{
+			if(p_EmptyArtistsDB.AttachedControl != null) { Console.WriteLine(p_EmptyArtistsDB.AttachedControl.Text); }
+
 			artist_id.ValueType = typeof(int);
 			getArtistCount();
 			getMaxPage();
@@ -35,8 +37,7 @@ namespace herGame
 
 		private void Tb_PageNum_MouseWheel(object sender, MouseEventArgs e)
 		{
-			int i = 0;
-			int.TryParse(tb_PageNum.Text, out i);
+			int.TryParse(tb_PageNum.Text, out int i);
 
 			if (e.Delta > 0)
 			{
@@ -101,12 +102,11 @@ namespace herGame
 			if (MessageBox.Show("This operation will attempt to download all artist data from E621\r\nSince there are more than 32000 artists on E621 this may take anywhere from 5 to 15 minutes depending on your internet speed.\r\n\r\nAre you sure you wish to continue?", "Are you sure?!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
 			{
 				c_Downloader cd = new c_Downloader();
-				long elapsedTime = 0;
 				Stopwatch sw = new Stopwatch();
 				sw.Start();
 				int i = 0;
 				bool run = false;
-				List<c_Artist> artists = cd.getArtists(out elapsedTime);
+				List<c_Artist> artists = cd.getArtists(out long elapsedTime);
 				foreach (var v in artists)
 				{
 					if (artists.Last().Equals(v)) { run = true; }
@@ -132,10 +132,7 @@ namespace herGame
 
 		private void btn_EmptyDB_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show("You are about to empty the artist database.\r\nThis action can not be reverted.\r\n\r\nAre you sure you wish to continue?","Are you sure?!",MessageBoxButtons.YesNo,MessageBoxIcon.Warning) == DialogResult.Yes)
-			{
-				cs.deleteFrom("artists");
-			}
+			//TODO:OpenPanel
 		}
 
 		private void btn_Next_Click(object sender, EventArgs e)

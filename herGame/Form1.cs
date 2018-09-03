@@ -191,9 +191,10 @@ namespace herGame
 
 		private void btn_Artists_Click(object sender, EventArgs e)
 		{
-			f_Artists fa = new f_Artists();
-			fa.cs = cs;
-			fa.ShowDialog();
+			new f_Artists
+			{
+				cs = cs
+			}.ShowDialog();
 			
 		}
 		
@@ -271,10 +272,13 @@ namespace herGame
 			var arr = new c_Image[limit];
 			images.CopyTo((limit * page), arr, 0, limit);
 			int i = 0;
-			foreach(var v in arr)
+			foreach (var v in arr)
 			{
-				ListViewItem lvi = new ListViewItem();
-				lvi.Text = ++i + "";
+				Image img = new Bitmap(1, 1);
+				ListViewItem lvi = new ListViewItem
+				{
+					Text = ++i + ""
+				};
 				lvi.SubItems.AddRange(new ListViewItem.ListViewSubItem[] {
 					
 					new ListViewItem.ListViewSubItem(){ Text = v.md5 },
@@ -283,7 +287,7 @@ namespace herGame
 					new ListViewItem.ListViewSubItem(){ Text = v.shared ? "" : "" }
 				});
 
-				lvi.Tag = v;
+				lvi.Tag = new object[] { v, img };
 
 				lv_Images.Items.Add(lvi);
 			}

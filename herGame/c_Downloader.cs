@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable IDE0044 // Add readonly modifier
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
